@@ -1,0 +1,31 @@
+<h2><span ng-bind="tituloModal"></span></h2>
+<div>
+    <div>
+        <div id="contenedorCabecera" class="container">
+            <div> 
+                <table class="table">
+                    <tr>
+                        <td>Palabrax: </td>
+                        <td><input type="text"  ng-model="contexto.palabra" style="width: 80%"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 250px">Categorias: </td>
+                        <td><input type="text" ng-model="contexto.categoria" style="width: 50%"> </td>
+                    </tr>
+                    <tr>
+                        <td>Activa: </td>
+                        <td>
+                            <div class="material-switch pull-left" title="Si desactiva esta opción, la palabra quedará dejera de ser un stopword en todas sus categorias." >
+                                <input  type="checkbox" id="someSwitchOptionSuccess" name="someSwitchOption001"  ng-model="contexto.permite_rastrear" />
+                                <label for="someSwitchOptionSuccess" class="label-success"></label>
+                            </div>  
+                        </td>
+                </table>  
+                <br>
+            </div>
+        </div>
+
+        <button ng-click="guardar()" class="btn btn-success glyphicon glyphicon-ok"> <span>Guardar</span></button> 
+        <a href="#/fuentes" class="btn btn-primary glyphicon glyphicon-home"> <span>Cancelar</span></a>
+    </div>
+</div>

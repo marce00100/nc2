@@ -1,0 +1,109 @@
+<div class="container">
+    <div>
+        <div id="contenedorCabecera" class="container">
+            <h3 class="bg-dark-dark " style="padding: 5px 10px">Datos de la fuente de información</h3>
+            <div id="div_mensaje"  ng-bind-html ="mensaje.texto" class="{{mensaje.estilo}} container col-md-10 col-md-offset-1"  ng-show="mensaje.mostrar"></div>
+            <div > 
+                <table id="formFuente" class="table " >
+
+                    <tr>
+                        <td style="width: 250px">Nombre de la Fuente: </td>
+                        <td><input type="text" id="txtFuenteNombre" ng-model="contexto.fuente_nombre" style="width: 50%">                 </td>
+                    </tr>
+                    <tr>
+                        <td>Sección: </td>
+                        <td><input type="text" id="txtFuenteSeccion" ng-model="contexto.fuente_seccion" style="width: 50%"></td>
+                    </tr>  
+                    <tr>
+                        <td>Url: </td>
+                        <td><input type="text" id="txtUrl" ng-model="contexto.fuente_url" style="width: 80%"></td>
+                    </tr>
+                    <tr>
+                        <td>País: </td>
+                        <td><input type="text"   ng-model="contexto.pais" style="width: 80%"></td>
+                    </tr>
+                    <tr>
+                        <td>Ciudad: </td>
+                        <td><input type="text" ng  ng-model="contexto.ciudad" style="width: 80%"></td>
+                    </tr>
+                    <tr>
+                        <td>Tipo de fuente: </td>
+                        <td><select id="cmbFuenteTipo" ng-model="contexto.fuente_tipo" ng-options="item.id as item.nombre for item in cla.fuenteTipo" style="width: 50%">
+                            </select>
+                        </td>
+                    </tr> 
+                    <tr>
+                        <td>Prioridad: </td>
+                        <td><select id="cmbPrioridad" ng-model="contexto.prioridad" ng-options="item.id as item.nombre  for item in cla.prioridad"  style="width: 50%">
+                            </select>
+                        </td>
+                    </tr> 
+                    <tr>
+                        <td>Permitir busquedas de esta fuente: </td>
+                        <td>
+                            <div class="material-switch pull-left"  >
+                                <input type="checkbox" id="someSwitchOptionSuccess" name="someSwitchOption001"  ng-model="contexto.permite_rastrear" />
+                                <label for="someSwitchOptionSuccess" class="label-success"></label>
+                            </div>                          
+
+                        </td>
+                    </tr>
+                </table>  
+                <br>
+                <div ng-show="contexto.id">
+                    <h5><b>Elementos propios de la fuente (RSS, Atom, XML, WEB, ...)</b></h5>
+                    <div style="margin: 20px 100px; padding: 20px; border: 1px solid grey">
+                        <table>
+                            <tr>
+                                <td><b>Título: </b></td>
+                                <td><span ng-bind="contexto.titulo" ></span></td>
+                            </tr>
+                            <tr>
+                                <td><b>Link: </b></td>
+                                <td><span ng-bind="contexto.link"></span></td>
+                            </tr>
+                            <tr>
+                                <td><b>Descripcción: </b></td>
+                                <td><span ng-bind="contexto.descripcion"></span></td>
+                            </tr>
+                            <tr>
+                                <td><b>Tipo: </b></td>
+                                <td><span ng-bind="contexto.tipo"></span></td>
+                            </tr>
+                            <tr>
+                                <td><b>Ultima publicación: </b></td>
+                                <td><span ng-bind="contexto.ultima_pub"></span></td>
+                            </tr>
+                            <tr>
+                                <td><b>Ultimo rastrillaje: </b></td>
+                                <td><span ng-bind="contexto.ultima_pasada"></span></td>
+                            </tr> 
+                            <tr>
+                                <td><b>Lenguaje: </b></td>
+                                <td><span ng-bind="contexto.lenguaje"></span></td>
+                            </tr>
+                            <tr>
+                                <td><b>Fuente vigente: </b></td>
+                                <td><span ng-bind="contexto.vigente"></span></td>
+                            </tr>
+                            <tr>
+                                <td><b>Numero de pasadas (rastreos): </b></td>
+                                <td><span ng-bind="contexto.numero_pasadas"></span></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <button ng-click="guardar()" class="btn btn-success btn-icon"><i class="fa fa-check"></i> <span> Guardar</span></button> 
+        <a href="#/fuentes" class="btn btn-primary btn-icon"><i class="fa fa-home"></i> <span> Volver al inicio</span></a>
+    </div>
+
+</div>

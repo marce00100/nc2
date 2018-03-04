@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html ng-app="appNews">
+    <head>
+        <title>Buscador de Feeds de noticias</title>
+        <meta charset="UTF-8">
+        <link rel="shortcut icon" href="favicon.ico">        
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
+
+
+        <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+        <link href="css/urban.css" rel="stylesheet" type="text/css"/>
+        <link href="css/fontAwesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+        <link href="css/estilo.css" rel="stylesheet" type="text/css"/>
+
+    </head>
+    <body ng-controller="AppCtrl">
+        <header>
+            <div class="container-fluid" >
+                <h1>NeWS CRAWLeR</h1>
+            </div>
+            <div class="row container-fluid">
+                <div class="col-xs-4" >
+                    <h3 ng-bind="subtitulo"></h3>
+                </div>
+                <div class="col-xs-8" ng-include="'templates/comun/menu.html'"></div>                
+            </div>
+            <!--<div hidden=""><input id="fileImg" hidden="" type="file"  ng-model="file"  base-sixty-four-input   ng-change="insertarImagen(file)" ></div>-->
+        </header>
+
+        <div class="block" ng-view></div>
+        <!--        <div>
+            <div class="row">
+                <h4>NewsCrawler - Sistema para busquedas de feeds de noticias</h4>
+            </div>
+        </div>-->
+        <br>
+
+
+        <script src="bower_components/jquery/dist/jquery.min.js" type="text/javascript"></script>
+        <script src="bower_components/angular/angular.min.js" type="text/javascript"></script>
+        <script src="bower_components/angular-animate/angular-animate.min.js" type="text/javascript"></script>
+        <script src="bower_components/angular-route/angular-route.min.js" type="text/javascript"></script>       
+        <script src="bower_components/angular-sanitize/angular-sanitize.min.js" type="text/javascript"></script>
+        <!-- <script src="bower_components/angular-select2/dist/angular-select2.min.js" type="text/javascript"></script> -->
+
+
+        <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.js" type="text/javascript"></script>
+
+
+        <script src="scripts/app.js" type="text/javascript"></script>  
+        <script src="scripts/config-controllers.js" type="text/javascript"></script>  
+        <script src="scripts/crawl-controller.js" type="text/javascript"></script>  
+        <script src="scripts/bandeja-exploracion-controller.js" type="text/javascript"></script>  
+    </body>
+
+
+</html>

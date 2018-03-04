@@ -1,0 +1,10 @@
+Tener WAMP 
+
+- copiar la carpeta nc-v1 al wwww
+- crear la base de datos News
+- con artisan generar las tablas  (ver en linea como migrar con artisan )
+	ejemplo : \php artisan migrate  (un comando asi generara las tablas)
+- en el archivo news.sql se encuentran los inserts para las tablas stopwords y algunas fuentes de datos de ejemplos
+
+- Cada proyecto tanto el back como el front son proyectos separados para netbeans
+

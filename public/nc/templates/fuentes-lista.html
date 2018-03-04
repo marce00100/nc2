@@ -1,0 +1,69 @@
+
+<div class="container-fluid">
+    <div >
+        <br>
+        <div class="row ">
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                <a href="#/fuentes/nueva" class="btn btn-success btn-icon"><i class="glyphicon glyphicon-plus"></i> <span> Agregar una fuente</span></a>
+            </div>
+            <div class="col-md-3" >
+                <b>Total fuentes: {{lista.length}}</b>
+            </div>
+            <div  class="col-md-5">
+                <span style="padding: 0px 120px">búsqueda: <input type="text" ng-model="busqueda" style="width: 300px"></span>
+            </div>
+        </div>
+        <div class=" row  listaItems">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <table id="breakingBadChar" class="table table-hover" > 
+                    <thead>
+                        <tr> 
+                            <th></th>
+                            <th>Fuente</th>
+                            <th>Sección</th>
+                            <th>URL - prioridad</th>                        
+                            <th>Rastrear</th>
+                            <th>Título</th>
+                            <th>Descripción</th>
+                            <th>Ultimo rastreo</th>
+                            <th>Num. rastreos</th>
+                            <th>Vigente</th>
+                            <th>items</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in lista| filter: busqueda" >    
+                            <td>{{$index + 1}}</td>
+                            <td><a href="#/fuentes/editar/{{item.id}}"  ><b> <span ng-bind="item.fuente_nombre"></span></b></a></td>
+                            <td>
+                                <b><span ng-bind="item.fuente_seccion"></span></b></td>
+                            <td>
+                                <span class="badge {{ item.prioridad == 1 ? 'bg-primary':'bg-info'}} ">{{item.prioridad}}</span>
+                                <a href="{{item.fuente_url}}"><span ng-bind="item.fuente_url"></span></a>                
+                            </td>
+                            <td> 
+                                <a href="#/fuentes/editar/{{item.id}}"  >
+                                    <div class="material-switch pull-left">
+                                        <input type="checkbox"  id="someSwitchOptionSuccess" name="someSwitchOption001" ng-model="item.permite_rastrear"  disabled=""/>
+                                        <label for="someSwitchOptionSuccess" class="label-success"></label>
+                                    </div>
+                                </a>
+                            </td>
+                            <td><span ng-bind="item.titulo"></span></td>
+                            <td><span ng-bind="item.descripcion"></span></td>
+                            <td><span ng-bind="item.ultima_pasada"></span></td>
+                            <td><span ng-bind="item.numero_pasadas"></span></td>
+                            <td>{{item.vigente?'S':'N'}}</td>
+                            <td><b><span ng-bind="item.nodos"></span></b></td>
+                            <td><a href="#/fuentes/editar/{{item.id}}" class="glyphicon glyphicon-pencil" title="editar" ></a>
+                                <a href="" ng-click="eliminar(item.id, $index)" ><span class="glyphicon glyphicon-trash" title="eliminar"></span></a></td>                        
+                        </tr>
+                    </tbody>
+                </table>         
+            </div>
+        </div>
+    </div>
+</div>

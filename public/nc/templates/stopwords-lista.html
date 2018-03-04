@@ -1,0 +1,84 @@
+
+<div class="container">
+    <div >
+        <br>
+        <h3>Listado de palabras-stopwords del sistema.</h3><br>
+        <div class="row">
+            <div class="col-md-3"><button class="btn btn-success btn-icon" ng-click="muestraFormSW()"><i class="fa fa-plus"></i> <span> Agregar una palabra</span></button></div>
+            <div class="col-md-2">Total palabras: <b>{{lista.length}}</b></div>
+            <div class="col-md-7" align="left"><span style="padding: 0px 120px">búsqueda: <input type="text" ng-model="busqueda" style="width: 300px"></span></div>
+
+        </div>
+        <div class="table-responsive" style="height: 600px">
+            <table id="breakingBadChar" class="table table-hover" > 
+                <thead>
+                    <tr>    
+                        <th>N</th>
+                        <th>Palabra</th>
+                        <th>Categorías</th>                        
+                        <th>activo</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in lista| filter: busqueda | orderBy:'palabra'">   
+                        <td>{{$index + 1}} - id: {{item.id}}</td>
+                        <td><span ng-bind="item.palabra"></span></td>
+                        <td><span ng-bind="item.categoria"></span></td>
+                        <td> 
+                            <!--                            <a href="#/fuentes/editar/{{item._id}}"  >-->
+                            <div class="material-switch pull-left">
+                                <input type="checkbox"  id="someSwitchOptionSuccess" name="someSwitchOption001" ng-model="item.activa"  disabled=""/>
+                                <label for="someSwitchOptionSuccess" class="label-success"></label>
+                            </div>
+                            <!--</a>-->
+                        </td>
+                        <td><a href="" ng-click="muestraFormSW(item.id, $index)" class="glyphicon glyphicon-pencil " ></a>
+                            <a href="" ng-click="eliminar(item.id, $index)" ><span class="glyphicon glyphicon-trash"></span></a></td>                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+    </div>
+</div>
+
+<script type="text/ng-template" id="stopword-form_.html">
+
+    <div class="modal-header bg-dark-light">
+        <button type="button" class="close" data-dismiss="modal" ng-click="cancelar()">&times;</button>
+    <h3 class="modal-title bg-dark-light " style="padding: 5px 20px"><span ng-bind="tituloModal"></span></h3>
+    </div>   
+    <div class="modal-body" id="modal-body">
+            <div> 
+                <table class="table">
+                    <tr>
+                        <td>Palabra: </td>
+                        <td><input type="text"  ng-model="contexto.palabra" style="width: 250px"></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 250px">Categorias: </td>
+                        <td><input type="text" ng-model="contexto.categoria" style="width: 250px"> </td>
+                    </tr>
+                    <tr>
+                        <td>Activa: </td>
+                        <td>
+                            <div class="material-switch pull-left" title="Si desactiva esta opción, la palabra quedará dejera de ser un stopword en todas sus categorias." >
+                                <input  type="checkbox" id="someSwitchOptionSuccess" name="someSwitchOption001"  ng-model="contexto.activa" />
+                                <label for="someSwitchOptionSuccess" class="label-success"></label>
+                            </div>  
+                        </td>
+                </table>  
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success  btn-icon" type="button" ng-click="guardar()" ><i class="fa fa-check"></i><span> Guardar</span></button> 
+        <button class="btn btn-warning btn-icon " type="button" ng-click="cancelar()"><i class="fa fa-times"></i><span> Cancel</span></button>
+    </div>
+    
+</script>
+
+
+

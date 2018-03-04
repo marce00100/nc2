@@ -1,0 +1,9 @@
+
+frontend
+http://localhost/nc/#/fuentes
+
+contenidos guardados idNodo
+http://localhost/newsCrawler-b/public/nodo/contenido/9878EE3A-A0EF-30E5-4CD1-7153417BF000
+
+contenidos online idFuente/numero
+http://localhost/newsCrawler-b/public/crawl/8fcbbea1-20f9-53da-acb8-5ba1cae0494f/8
