@@ -3,46 +3,46 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Models\ParametrosModel as Parametro;
-
-//use App\Http\Controllers\Controller;
-//use App\Http\Requests;
 
 class ParametrosController extends Controller
 {
 
     public function obtenerValorParametro(Request $obj)
     {
-        $dominio = $obj->dominio;
-//        $parametro = $obj->parametro;
-        $codigo = $obj->codigo;
-        $valor = null;
-
-        if ($codigo != null)
-        {
-            $params = Parametro::where('dominio', $dominio)->where('codigo', $codigo)->get();
-
-            if (count($params) > 0)
-            {
-                $valor = $params[0]->valor;
-            }
-        }
-
+        $valor = ParametrosController::obtenerValor($obj->dominio, $obj->codigo);
         return response()->json([
-                            "estado" => "success",
-                            "valor" => $valor,
-                        ], 200);
+            "estado" => "success",
+            "valor"  => $valor,
+        ]);
     }
 
     public function modificarValorParametro(Request $obj)
     {
-        $parametro = Parametro::where('dominio', $obj->dominio)->where('codigo', $obj->codigo)->first();
-        $parametro->valor = $obj->valor;
-        $parametro->save();
-
+        ParametrosController::modificarValor($obj->dominio, $obj->codigo, $obj->valor);
         return response()->json([
-                            "estado" => "success",
+            "estado" => "success",
+            "valor"  => $obj->valor,
         ]);
+    }
+
+    public function obtenerDominioAll(Request $obj)
+    {       
+        $objetos = \DB::table('parametros')->where('dominio', $obj->dominio)->get();
+        return response()->json([
+            'estado' => 'succes',
+            'data'   => $objetos,
+        ]);
+    }
+
+    public static function obtenerValor($dominio, $codigo)
+    {
+        $param = \DB::table('parametros')->where('dominio', $dominio)->where('codigo', $codigo)->first();
+        return $param->valor;
+    }
+
+    public static function modificarValor($dominio, $codigo, $valor)
+    {
+        \DB::table('parametros')->where('dominio', $dominio)->where('codigo', $codigo)->update(['valor' => $valor]);
     }
 
 }

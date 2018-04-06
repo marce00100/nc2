@@ -2,37 +2,19 @@
 <div class="container">
     <div> 
         <br>
-        <button class="btn btn-success btn-icon w200" ng-click="empezarCrawl()" ng-hide="procesandoCrawl"><i class="fa fa-play "></i><span> Empezar rastrillaje</span> </button>
+<!--         <button class="btn btn-success btn-icon w200" ng-click="empezarCrawl()" ng-hide="procesandoCrawl"><i class="fa fa-play "></i><span> Empezar rastrillaje</span> </button>
         <button class="btn bg-success-dark btn-icon w200"    disabled=""        ng-show="procesandoCrawl"><i class="fa fa-play"></i><span> rastreando feeds </span> <i class="fa  fa-window-minimize fa-pulse fa-lg "> </i> </button>
         
-        <button class="btn bg-orange btn-icon w200" ng-click="iniciarDetenerCrawl(0)"><i class="fa fa-stop "></i><span> Detener</span> </button>
+        <button class="btn bg-orange btn-icon w200" ng-click="iniciarDetenerCrawl(0)"><i class="fa fa-stop "></i><span> Detener</span> </button> -->
+
+        <button id="btn_iniciar" class="btn bg-primary" ng-click="startCrawling()">iniciar</button>
+        <button id="btn_parar" class="btn bg-primary" ng-click="stopCrawling()">parar</button>
 
         <!--<button class="btn btn-success btn-icon" ng-click="test()"><i class="fa fa-play "></i><span> test</span> </button>-->
 
         <br>
         <br>
-        <div class="row">
-            <span class="btn-primary col-md-2 "><span>Artículos en BD: </span><span ng-bind="numeroArticulos">   </span></span>
-            <span  class="btn-danger col-md-2"><span>Procesados en BD: </span><span ng-bind="numeroProcesados"></span></span>
-            <span  class="btn-warning col-md-2"><span>Nuevos encontrados: </span><span ng-bind="nuevos">   </span></span>
-            <span  class="btn-success col-md-2"><span>Nuevos procesados: </span><span ng-bind="nuevosProcesados">   </span></span>
-            <span  class="btn-info col-md-4">10 Fuentes con mas artículos en BD</span>
-        </div>
-        <div class="row container m0">
-            <div class="col-md-8 contenedor-items ">
-                <div id="contenedorItems" >
 
-                </div>
-            </div>
-            <div class="col-md-4 contenedor-top">
-                <ul>
-                    <li ng-repeat="top in topFuentes" style="border-bottom: solid 1px goldenrod; margin-bottom: 10px">
-                        {{$index + 1}}. {{top.fuente_nombre}} - articulos : {{top.articulos}}
-                    </li>
-                </ul>
-
-            </div>
-        </div>
 
     </div>
 

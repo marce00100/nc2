@@ -65,8 +65,7 @@ class Lib
 
     public static function FechaHoraActual()
     {
-        date_default_timezone_set('America/La_Paz');
-        return date("d/m/Y H:i:s");
+        return \Carbon\Carbon::now('America/La_Paz');
     }
 
     // <editor-fold defaultstate="collapsed" desc="Funcion Normalizar quita caracteres raros">

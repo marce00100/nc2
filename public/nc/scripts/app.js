@@ -34,7 +34,8 @@ app.config(['$routeProvider', function($routeProvider) {
 
     .factory('comun', function($location, $rootScope) {
         var fac = {};
-        fac.urlBackend = '/'; //'/newsCrawler-b/public/index.php/'; //
+        // fac.urlBackend = '/www/nc21/public/index.php/'; //'/newsCrawler-b/public/index.php/'; //
+        fac.urlBackend = '/www/nc20/public/';
         fac.colocarSubtitulo = function(sub) {
             $rootScope.subtitulo = sub;
         };
@@ -72,5 +73,15 @@ app.config(['$routeProvider', function($routeProvider) {
                     nombre: "Alta"
                 }]
             }
+
+            $.ajaxSetup({
+
+                headers: {
+
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+
+                }
+
+            });
         }
     ]);

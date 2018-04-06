@@ -18,26 +18,41 @@ Route::get('/', function () {
 });
 
 
+Route::group(['prefix'=> 'fuentes'], 
+    function(){
+        Route::get("/", 'FuentesController@index');
+        Route::get("/{id}", 'FuentesController@show');
+        Route::post("/", 'FuentesController@store');
+        Route::delete("/{id}", 'FuentesController@destroy');
+    });
 
-Route::get("fuentes", 'FuentesController@index');
-Route::get("fuentes/{id}", 'FuentesController@show');
-Route::post("fuentes", 'FuentesController@store');
-Route::put("fuentes/{id}", 'FuentesController@update');
-Route::delete("fuentes/{id}", 'FuentesController@destroy');
+Route::group(['prefix' => 'configuracion'],
+    function(){
+        Route::get("/sw", "ConfigController@listarStopwords");
+        Route::get("/sw/{id}", "ConfigController@obtenerStopword");
+        Route::post("/sw", "ConfigController@insertarStopword");
+        Route::put("/sw/{id}", "ConfigController@actualizarStopword");
+        Route::delete("/sw/{id}", "ConfigController@eliminarStopword");
+    });
 
-Route::get("crawl/validosCrawl", "CrawlController@validosCrawl"); // para obtener los articulos de la fuente de turno,
-Route::get("crawl/datos", "CrawlController@obtieneDatos"); // op : {'na':'numeroArticulos', 'ta' 'topArticulos','taf': totalArticulosPorFuente' }
-Route::get("crawl/{id}", "CrawlController@crawlFuenteNodos");
-Route::get("crawlItem/{id}", "CrawlController@crawlContenidos");
 
-Route::get("configuracion/sw", "ConfigController@listarStopwords");
-Route::get("configuracion/sw/{id}", "ConfigController@obtenerStopword");
-Route::post("configuracion/sw", "ConfigController@insertarStopword");
-Route::put("configuracion/sw/{id}", "ConfigController@actualizarStopword");
-Route::delete("configuracion/sw/{id}", "ConfigController@eliminarStopword");
+Route::get("crawl/validosCrawl", "CrawlController@validosCrawl"); // fuentes validas para realizar crawl,
+Route::get("crawl/obtieneDatos", "CrawlController@obtieneDatos"); 
+Route::get("crawl/fuente/{id}", "CrawlController@crawlFuente");
+Route::get("crawl/nodoContenido/{id}", "CrawlController@crawlNodoContenido");
 
-Route::post("parametros/getValor", 'ParametrosController@obtenerValorParametro');
+/////////////////// UPGRADE
+Route::group(['prefix' => 'crawler'], function(){
+    Route::get("/run", "CrawlingController@crawlerRun");
+    Route::get("/stop", "CrawlingController@crawlerStop");
+});
+
+
+
+Route::get("parametros/getValor", 'ParametrosController@obtenerValorParametro');
 Route::post("parametros/putValor", 'ParametrosController@modificarValorParametro');
+Route::get("parametros/dominioAll", 'ParametrosController@obtenerDominioAll');
+
 
 Route::get("explorar/obtenerfiltros",     'ExplorarController@obtenerfiltros');
 Route::post("explorar/obtenerbusqueda",   'ExplorarController@obtenerBusqueda');
@@ -53,9 +68,13 @@ Route::get('cnfgphp', function ()
 {
    echo phpinfo();
 });
-Route::get("prueba1", "FuentesController@prueba1");
-Route::get("prueba2/{id}", "FuentesController@prueba2");
-Route::get("prueba3/{id}", "FuentesController@prueba3");
+
+Route::get("prueba2", function(){
+    return view('super');
+});
+Route::get("suite", function(){
+    return view('suite');
+});
 
 Route::get("prueba", function()
 {

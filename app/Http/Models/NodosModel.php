@@ -9,7 +9,7 @@ class NodosModel extends Model
 
     protected $table = 'nodos';
     
-    public $incrementing = false;
+    // public $incrementing = false;
     // cuando no se usan los campos created_at y update_at 
     public $timestamps = false;
     

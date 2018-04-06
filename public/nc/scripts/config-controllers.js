@@ -4,6 +4,7 @@ app.controller('fuentesInicioCtrl', ['$scope', 'comun', '$http', function($scope
         $http.get(comun_.urlBackend + 'fuentes').success(function(respuesta) {
             $scope_.lista = respuesta.fuentes;
         });
+            $http.get(comun_.urlBackend + "parametros/dominioAll", {params : {dominio: 'crawl'}}).success(function (res) {});
         $scope_.eliminar = function(id, $index) {
             var elimina = confirm("Esta seguro de eliminar esta fuente ??");
             if (elimina) {
@@ -97,7 +98,7 @@ app.controller('fuentesInicioCtrl', ['$scope', 'comun', '$http', function($scope
                 mostrarMensaje($scope.mensaje, $scope.estiloAlert[1],
                     '<b>Los campos de Nombre, Seccion y URL no pueden estar vacios.</b>');
             } else {
-                $http.put(comun.urlBackend + 'fuentes/' + id, $scope.contexto).success(function(res) {
+                $http.post(comun.urlBackend + 'fuentes', $scope.contexto).success(function(res) {
                     if (res.estado === 'success') {
                         comun.irA('/');
                     } else {

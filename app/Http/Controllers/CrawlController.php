@@ -13,7 +13,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\DB;
 use SimplePie;
 use Sunra\PhpSimple\HtmlDomParser;
 use App\Http\Models\FuentesModel as Fuentes;
@@ -27,14 +27,12 @@ class CrawlController extends Controller
 
     public function validosCrawl()
     {
-        $fuentes = Fuentes
-                ::orderBy('prioridad')->orderBy('fuente_nombre')
-                ->where('permite_rastrear', '=', '1')
-                ->get(['id', 'fuente_nombre', 'fuente_url', 'prioridad', 'modificado_en']);
+        $fuentesValidas = \DB::select("SELECT id, fuente_nombre, fuente_url, prioridad, modificado_en
+                                        FROM fuentes WHERE permite_rastrear ORDER BY prioridad, fuente_nombre ");
 
         return response()->json([
-                            "mensaje" => "Encontrados " . count($fuentes),
-                            "fuentes" => $fuentes->toArray(),
+                            "mensaje" => "Encontrados " . count($fuentesValidas),
+                            "fuentes" => $fuentesValidas,
                         ], 200);
     }
 
@@ -44,7 +42,7 @@ class CrawlController extends Controller
 
         $numArticulos = Nodos::count();
         $procesados = Normalizados::count();
-        $topFuentes = DB::select("select f.fuente_nombre, count(*) as articulos 
+        $topFuentes = \DB::select("SELECT f.fuente_nombre, count(*) as articulos 
                                     from fuentes f, nodos n 
                                     where f.id = n.id_fuente and n.procesado = 1
                                      group by f.fuente_nombre
@@ -58,13 +56,22 @@ class CrawlController extends Controller
                         ], 200);
     }
 
+    public function crawlerRun()
+    {
+        $n = json_decode($this->validosCrawl(), true) ; 
+        // $numero = $n['mensaje'];
+        return response()->json([
+            'validos' => $n,
+            'mensaje' => 'ssssssss']);
+    }
+
     /*
      * Realiza el rastrillaje de la fuente RSS y sus nodos, por lo tanto                      //
      * actualiza la tabla de Fuentes y Realiza las inserciones
      * de cada uno de los items en la Tabla nodos
      */
 
-    public function crawlFuenteNodos($id)
+    public function crawlFuente($id)
     {
         $fuenteBD = Fuentes::find($id);
         $nodosReturn = array();
@@ -85,8 +92,8 @@ class CrawlController extends Controller
                         foreach ($feed->get_items() as $itemNodo)
                         {
                             /////// quitar contador*////////////////////********************************/////////////////////////////////////////////////////////
-//                            if ($contadorControl < 2)
-//                            {
+                           // if ($contadorControl < 2)
+                           // {
                                 $nodoLink = $itemNodo->get_link();
                                 $exist_itemNodo_bd = Nodos::where('link', '=', $nodoLink)->get(); //verifica si ya existe
                                 if (count($exist_itemNodo_bd) == 0)
@@ -95,7 +102,7 @@ class CrawlController extends Controller
                                     $this->actualizarDatosNodo($nodo, $itemNodo, $fuenteBD);
                                     $nodo->save();                                    
                                     $nodosReturn[] = $this->creaSalidaNodo($nodo); //creaSalidaNodo para que la salida no ocupe tanto solo los datos necesarios
-//                                    $contador++;
+                                   // $contador++;
                                 }
                                 else
                                 {
@@ -103,11 +110,11 @@ class CrawlController extends Controller
                                     if ($nodo->procesado <> 1)
                                     {
                                         $nodosReturn[] = $this->creaSalidaNodo($nodo); //creaSalidaNodo para que la salida no ocupe tanto solo los datos necesarios
-//                                        $contador++;
+                                       // $contador++;
                                     }
                                 }
-//                                $contadorControl++;
-//                            }
+                           //     $contadorControl++;
+                           // }
                             /////////////////////////////////////////////////////*******************************///////////////////////////////
                         }
                     }
@@ -135,11 +142,11 @@ class CrawlController extends Controller
                                 $nodo = new Nodos();
                                 $this->actualizaNodoTwitter($nodo, $item, $fuenteBD);
                                 $nodo->save();
-//                    if ($contador < 1)
-//                    {
+                   // if ($contador < 1)
+                   // {
                                 $nodosReturn[] = $this->creaSalidaNodo($nodo);
                                 $contador++;
-//                    }
+                   // }
                             }
                             else
                             {
@@ -170,7 +177,7 @@ class CrawlController extends Controller
      * cada normalizacion en la tabla Normalizados
      */
 
-    public function crawlContenidos($id)
+    public function crawlNodoContenido($id)
     {
         //quitar/////////////***********************
 //        $tiempo = rand(3, 6);
