@@ -36,21 +36,22 @@ Route::group(['prefix' => 'configuracion'],
     });
 
 
-Route::get("crawl/validosCrawl", "CrawlController@validosCrawl"); // fuentes validas para realizar crawl,
-Route::get("crawl/obtieneDatos", "CrawlController@obtieneDatos"); 
-Route::get("crawl/fuente/{id}", "CrawlController@crawlFuente");
-Route::get("crawl/nodoContenido/{id}", "CrawlController@crawlNodoContenido");
+// Route::get("crawl/validosCrawl", "CrawlController@validosCrawl"); // fuentes validas para realizar crawl,
+// Route::get("crawl/obtieneDatos", "CrawlController@obtieneDatos"); 
+// Route::get("crawl/fuente/{id}", "CrawlController@crawlFuente");
+// Route::get("crawl/nodoContenido/{id}", "CrawlController@crawlNodoContenido");
 
 /////////////////// UPGRADE
-Route::group(['prefix' => 'crawler'], function(){
-    Route::get("/run", "CrawlingController@crawlerRun");
-    Route::get("/stop", "CrawlingController@crawlerStop");
-});
+Route::group(['prefix' => 'crawler'], 
+    function(){
+        Route::get("/run", "CrawlingController@crawlerRun");
+        Route::get("/iniciaparametros", "CrawlingExtController@crawlIniciaParametros");
+    });
 
 
 
-Route::get("parametros/getValor", 'ParametrosController@obtenerValorParametro');
-Route::post("parametros/putValor", 'ParametrosController@modificarValorParametro');
+Route::get("parametros/getValor", 'ParametrosController@getValorParametro');
+Route::post("parametros/putValor", 'ParametrosController@putValorParametro');
 Route::get("parametros/dominioAll", 'ParametrosController@obtenerDominioAll');
 
 
@@ -69,12 +70,7 @@ Route::get('cnfgphp', function ()
    echo phpinfo();
 });
 
-Route::get("prueba2", function(){
-    return view('super');
-});
-Route::get("suite", function(){
-    return view('suite');
-});
+
 
 Route::get("prueba", function()
 {

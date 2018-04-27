@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-// use App\Http\Models\ContenidosModel as Contenido;
-// use App\Http\Models\NodosModel as Nodo;
-// use App\Http\Models\NormalizadosModel as Normalizado;
 use App\Libs\Lib;
 use SimplePie;
 use Sunra\PhpSimple\HtmlDomParser;
+use App\Http\Controllers\CrawlingExtController as crwlExt;
 
 class CrawlingController extends Controller
 {
@@ -17,52 +15,45 @@ class CrawlingController extends Controller
      */
     public function crawlerRun($tasks = 1)
     {
-        $timeM     = ParametrosController::obtenerValor('crawl', 'time_m') * 60;
-        $fuentes   = $this->fuentesValidas();
-        $res       = array();
-        $cont      = 0;
+        set_time_limit(0);
+        $timeM     = ParametrosController::obtenerValor('crawl', 'time_m');// * 60;        
+        $ciclo      = 0;
         $timeIni   = time();
         $timeIniT  = time();
         $timeTrans = $timeM;
 
-        while ($this->estadoRunning())
+        while (crwlExt::estadoRunning())
         {
+            $fuentes = crwlExt::fuentesValidas();
             if($timeTrans >= $timeM)
             {
+                $ciclo++;
+                ParametrosController::modificarValor('crawl', 'cicle', $ciclo);
                 $timeIni = time();
                 foreach ($fuentes as $fuente)
                 {
-                    if ($this->estadoRunning() == false)
+                    if (crwlExt::estadoRunning() == false)
                         break;
                     
                     try {
-                        // $nodos = $this->crawlFuenteAndNodos($fuente);
-                        $cont++;
-                        
-                    } catch (Exception $e) {
-                        // $this->insertaError($e, $fuente, )
+                        // TODO actualizar los vistos en nodos , sincronizar los ciclo para que sea con tareas paralelas
+                        $nodos = $this->crawlFuenteAndNodos($fuente);                      
+                    } catch (\Exception $e) {
+                        crwlExt::insertaError($e, $fuente, null, '' );
                     }
-
-                }
-
+                }                
             }
+
             sleep(2);
             $timeTrans = time() - $timeIni;
-
         }
 
-        $v = [
-            'uno' => 1,
-            'dos' => 20];
-
         return response()->json([
-            // 'ingresados Nuevos' => $nodos,
-            'cont'              => $cont,
+            'ciclo'              => $ciclo,
             'timeIniT'          => $timeIniT,
             'timeIni'           => $timeIni,
             'timeTrans'         => $timeTrans,
             'timeTransT'        => time() - $timeIniT,
-            'i' => $v['dos'],
 
         ]);
     }
@@ -76,10 +67,12 @@ class CrawlingController extends Controller
     public function crawlFuenteAndNodos($fuente)
     {
         $nodosReturn = array();
+        /* xxxxxxxxxxx TODO quitar $contNodos xxxxxxxxxxx */
+        $contNodos = 0;
         $tipoFuente  = strtoupper(trim($fuente->fuente_tipo));
         if ($tipoFuente == 'RSS')
         {
-            $feed       = $this->configSimplePie($fuente->fuente_url);
+            $feed       = crwlExt::configSimplePie($fuente->fuente_url);
             $tituloFeed = $feed->get_title();
             if ($tituloFeed === null || $tituloFeed === '') //verifica si existe
             {
@@ -90,21 +83,26 @@ class CrawlingController extends Controller
                 $itemsNodos = $feed->get_items();
                 foreach ($itemsNodos as $itemNodo)
                 {
-                    $existNodoBD = \DB::table('nodos')->where('link', '=', $itemNodo->get_link())->first(); //verifica si ya existe
-                    if ($existNodoBD == null)
-                    {
-                        $nodo = $this->insertarNodo($itemNodo, $fuente->id);
-                        $this->crawlNodoContenido($nodo);
-                        $nodosReturn[] = $nodo->id;
-                    }
-                    else if ($existNodoBD != null && $existNodoBD->procesado == 0)
-                    {
-                        $this->crawlNodoContenido($existNodoBD);
-                    }
-
+                    /*xxxx TODO quitar  xxxxxxxxxxxxxxxxxxxxxx*/
+                    if($contNodos < 2) {  
+                        /* xxxxxxxxxxx */
+                        $existNodoBD = \DB::table('nodos')->where('link', '=', $itemNodo->get_link())->first(); //verifica si ya existe
+                        if ($existNodoBD == null)
+                        {
+                            $nodo = crwlExt::insertarNodo($itemNodo, $fuente->id);
+                            $this->crawlNodoContenido($nodo);
+                            $nodosReturn[] = $nodo->id;
+                        }
+                        else if ($existNodoBD != null && $existNodoBD->procesado == 0)
+                        {
+                            $this->crawlNodoContenido($existNodoBD);
+                        }
+                        /* xxxxxxxxxxx TODO quitar xxxxxxxxxxxxxxxxxxxxxx */
+                    } 
+                    $contNodos++; /* xxxxxxxxxxx */
                 }
             }
-            $this->actualizarDatosFuente($fuente, $feed);
+            crwlExt::actualizarDatosFuente($fuente, $feed);
         }
         elseif ($tipoFuente == 'TWITTER')
         {
@@ -164,19 +162,19 @@ class CrawlingController extends Controller
         // $nodo        = Nodos::find($id);
         $contenido   = new \stdClass;
         $normalizado = new \stdClass;
-        $estado      = 'error';
-        try
+        $estado      = 'txt_sin_html';
+        $error      = '';
+
+        if ($nodo->link != '')
         {
-            if ($nodo->link != '')
-            {
-                $dom = HtmlDomParser::file_get_html($nodo->link, false, null, 0, -1, true, true, DEFAULT_TARGET_CHARSET, true, DEFAULT_BR_TEXT, DEFAULT_SPAN_TEXT);
+            $dom = HtmlDomParser::file_get_html($nodo->link, false, null, 0, -1, true, true, DEFAULT_TARGET_CHARSET, true, DEFAULT_BR_TEXT, DEFAULT_SPAN_TEXT);
                 //                $dom = HtmlDomParser::file_get_html($nodo->link);
                 //                    $elems = $dom->find('div');
-                $contenido->id_nodo          = $nodo->id;
-                $contenido->contenido        = (string) $dom->find('body', 0);
-                $contenido->creado_en        = Lib::FechaHoraActual();
-                $normalizado->id_nodo        = $nodo->id;
-                $normalizado->texto_sin_html = Lib::sinHtmlCaracteresEspeciales($dom->plaintext);
+            $contenido->id_nodo          = $nodo->id;
+            $contenido->contenido        = (string) $dom->find('body', 0);
+            $contenido->creado_en        = Lib::FechaHoraActual();
+            $normalizado->id_nodo        = $nodo->id;
+            $normalizado->texto_sin_html = Lib::sinHtmlCaracteresEspeciales($dom->plaintext);
 
                 //                $body = $dom->find('body', 0);
                 //                $desdeBody = Lib::sinHtmlCaracteresEspeciales($body->plaintext);
@@ -186,129 +184,60 @@ class CrawlingController extends Controller
                 //                            'textoSInhtml' => $normalizado->texto_sin_html,
                 //                            'desdeBody'=>$desdeBody
                 //                ]);
-
-                $stopwordsArray                   = ConfigController::stopwordsActivosArray();
-                $normalizado->texto_sin_stopwords = Lib::quitaStopwords($stopwordsArray, $normalizado->texto_sin_html);
-
+            $stopwordsArray                   = ConfigController::stopwordsActivosArray();
+            $estado      = 'txt_sin_stopwords';
+            $normalizado->texto_sin_stopwords = Lib::quitaStopwords($stopwordsArray, $normalizado->texto_sin_html);
+            $estado      = 'txt_lema';
                 //se convierte en un vector de palabras para cada una sea lematizada
-                $palabrasStemming = array();
-                foreach (explode(' ', $normalizado->texto_sin_stopwords) as $palabra)
-                {
-                    $palabrasStemming[] = \App\Libs\Stemm_es::stemm($palabra);
-                }
-                $normalizado->texto_lema = implode(' ', $palabrasStemming);
-                $normalizado->creado_en  = Lib::FechaHoraActual();
-            }
-            else
+            $palabrasStemming = array();
+            foreach (explode(' ', $normalizado->texto_sin_stopwords) as $palabra)
             {
-                $contenido->id_nodo               = $nodo->id;
-                $contenido->contenido             = '';
-                $contenido->creado_en             = Lib::FechaHoraActual();
-                $normalizado->id_nodo             = $id;
-                $normalizado->texto_sin_html      = '';
-                $normalizado->texto_sin_stopwords = '';
-                $normalizado->texto_lema          = '';
-                $normalizado->creado_en           = Lib::FechaHoraActual();
+                $palabrasStemming[] = \App\Libs\Stemm_es::stemm($palabra);
             }
-            //******************* descomentar ************************
-            \DB::table('contenidos')->insert(get_object_vars($contenido));
-            \DB::table('normalizados')->insert(get_object_vars($normalizado));
-            //        ********************************
-            $nodo->procesado = 1;
-            \DB::table('nodos')->where('id', $nodo->id)->update(get_object_vars($nodo));
-            $estado = 'success';
+            $normalizado->texto_lema = implode(' ', $palabrasStemming);
+            $estado      = 'success';
+            $normalizado->creado_en  = Lib::FechaHoraActual();
         }
-        catch (Exception $e)
+        else
         {
-
+            $contenido->id_nodo               = $nodo->id;
+            $contenido->contenido             = '';
+            $contenido->creado_en             = Lib::FechaHoraActual();
+            $normalizado->id_nodo             = $id;
+            $normalizado->texto_sin_html      = '';
+            $normalizado->texto_sin_stopwords = '';
+            $normalizado->texto_lema          = '';
+            $normalizado->creado_en           = Lib::FechaHoraActual();
         }
-        return $estado;
+            //******************* descomentar ************************
+        \DB::table('contenidos')->insert(get_object_vars($contenido));
+        \DB::table('normalizados')->insert(get_object_vars($normalizado));
+            //        ********************************
+        $nodo->procesado = 1;
+        \DB::table('nodos')->where('id', $nodo->id)->update(get_object_vars($nodo));
+        $estado = 'success';
+
+        
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private function fuentesValidas()
-    {
-        return collect(\DB::select("SELECT *
-                                        FROM fuentes WHERE permite_rastrear ORDER BY prioridad, fuente_nombre "));
-    }
 
-    private function estadoRunning()
-    {
-        return ParametrosController::obtenerValor('crawl', 'running') == '1';
-    }
 
-    /*---------------------------------------------
-    | Funcion que configura el SimplePie feeder
-     */
-    public function configSimplePie($url)
-    {
-        $feed = new SimplePie();
-        $opts = array('http' => array('header' => "User-Agent:MyAgent/1.0\r\n"));
-        //Basically adding headers to the request
-        $context = stream_context_create($opts);
-        $feed->set_raw_data(file_get_contents($url, false, $context));
-
-        //        $feed->set_raw_data(file_get_contents($url)); //  set_feed_url($url);
-        $feed->set_timeout(15);
-        $feed->enable_cache(true);
-        $feed->set_cache_location(storage_path() . '/cache');
-        //TODO Modificar el tiempo en segundos que durara la cache
-        $feed->set_cache_duration(60 * 15); // en segundos
-        $feed->set_output_encoding('utf-8');
-        $feed->init();
-        $feed->handle_content_type();
-        return $feed;
-    }
-
-    private function insertaError($e, $f, $n, $fase)
-    {
-        $error = [
-            'id_fuente'     => $f->id,
-            'fuente'        => $f->fuente_nombre,
-            'seccion'       => $f->fuente_seccion,
-            'fuente_url'    => $f->fuente_url,
-            'error'         => $e,
-            'id_nodo'       => $n->id,
-            'nodo_url'      => $n->link,
-            'creado_en'     => Lib::FechaHoraActual(),
-            'fase'          => $fase
-        ];
-        \DB::table('errores')->insert($error);
-    }
-
-    private function actualizarDatosFuente($fuente, $feed)
-    {
-        $fuente->titulo      = $feed->get_title();
-        $fuente->link        = $feed->get_link();
-        $fuente->descripcion = $feed->get_description();
-        $fuente->tipo        = $feed->get_type();
-        $fuente->ultima_pub  = $feed->get_items()[0]->get_date();
-        $fuente->vigente     = true;
-        $fuente->numero_pasadas++;
-        $fuente->ultima_pasada = Lib::FechaHoraActual();
-        $fuente->lenguaje      = $feed->get_language();
-        return $fuente;
-    }
-
-    private function insertarNodo($itemNodo, $id_fuente)
-    {
-        $nodo              = new \stdClass();
-        $nodo->id_fuente   = $id_fuente;
-        $nodo->titulo      = $itemNodo->get_title();
-        $nodo->descripcion = $itemNodo->get_description();
-        $nodo->link        = $itemNodo->get_link();
-        $nodo->autor       = Lib::implode_array_column_object("; ", $itemNodo->get_authors(), "name");
-        $nodo->fecha_pub   = $itemNodo->get_date();
-        $nodo->content     = $itemNodo->get_content();
-        $nodo->categoria   = Lib::implode_array_column_object("; ", $itemNodo->get_categories(), "term");
-        $nodo->procesado   = 0;
-        $nodo->creado_por  = 'user-0';
-        $nodo->creado_en   = Lib::FechaHoraActual();
-
-        $nodo->id = \DB::table('nodos')->insertGetId(get_object_vars($nodo));
-        return $nodo;
-    }
 
     private function obtieneJsonTwitter($screenName, $count)
     {

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class ParametrosController extends Controller
 {
 
-    public function obtenerValorParametro(Request $obj)
+    public function getValorParametro(Request $obj)
     {
         $valor = ParametrosController::obtenerValor($obj->dominio, $obj->codigo);
         return response()->json([
@@ -16,7 +16,7 @@ class ParametrosController extends Controller
         ]);
     }
 
-    public function modificarValorParametro(Request $obj)
+    public function putValorParametro(Request $obj)
     {
         ParametrosController::modificarValor($obj->dominio, $obj->codigo, $obj->valor);
         return response()->json([
