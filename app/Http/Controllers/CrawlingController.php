@@ -16,7 +16,7 @@ class CrawlingController extends Controller
     public function crawlerRun($tasks = 1)
     {
         set_time_limit(0);
-        $timeM     = ParametrosController::obtenerValor('crawl', 'time_m');// * 60;        
+        $timeM     = ParametrosController::obtenerValor('crawling', 'time_m');// * 60;        
         $ciclo      = 0;
         $timeIni   = time();
         $timeIniT  = time();
@@ -49,7 +49,7 @@ class CrawlingController extends Controller
         }
 
         return response()->json([
-            'ciclo'              => $ciclo,
+            'ciclo'             => $ciclo,
             'timeIniT'          => $timeIniT,
             'timeIni'           => $timeIni,
             'timeTrans'         => $timeTrans,
@@ -59,9 +59,9 @@ class CrawlingController extends Controller
     }
 
     /*
-     * Realiza el rastrillaje de la fuente RSS y sus nodos, por lo tanto                      //
-     * actualiza la tabla de Fuentes y Realiza las inserciones
-     * de cada uno de los items en la Tabla nodos
+    | Realiza el rastrillaje de la fuente RSS y sus nodos, por lo tanto                      //
+    | actualiza la tabla de Fuentes y Realiza las inserciones
+    | de cada uno de los items en la Tabla nodos
      */
 
     public function crawlFuenteAndNodos($fuente)
