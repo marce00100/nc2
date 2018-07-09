@@ -27,6 +27,10 @@ app.config(['$routeProvider', function($routeProvider) {
                 templateUrl: "templates/bandeja-exploracion.html",
                 controller: "bandejaExploracionCtrl"
             })
+            // .when('/capturador', {
+            //     templateUrl: "templates/capturador.html",
+            //     controller: "capturadorCtrl"
+            // })
             .otherwise({
                 redirectTo: '/fuentes'
             });
@@ -58,20 +62,19 @@ app.config(['$routeProvider', function($routeProvider) {
             }
 
             $scope.cla = {
-                'fuenteTipo': [{
-                    'id': 'RSS',
-                    'nombre': 'RSS feed'
-                }, {
-                    'id': 'TWITTER',
-                    'nombre': 'TWITTER'
-                }],
-                'prioridad': [{
-                    id: "2",
-                    nombre: "Normal"
-                }, {
-                    id: "1",
-                    nombre: "Alta"
-                }]
+                'fuenteTipo': [
+                    { 'id': 'RSS', 'nombre': 'RSS feed' }, 
+                    { 'id': 'TWITTER', 'nombre': 'TWITTER'}
+                ],
+                'prioridad': [
+                    { id: "2", nombre: "Normal"}, 
+                    { id: "1",nombre: "Alta"}
+                ],
+                'permiteRastrear' : [
+                    { 'id':'N',  'nombre':'No rastrear'}, 
+                    { 'id':'A',  'nombre':'Automatica'}, 
+                    { 'id':'M',  'nombre':'Manual'}, 
+                ]
             }
 
             $.ajaxSetup({

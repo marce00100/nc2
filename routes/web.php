@@ -24,6 +24,8 @@ Route::group(['prefix'=> 'fuentes'],
         Route::get("/{id}", 'FuentesController@show');
         Route::post("/", 'FuentesController@store');
         Route::delete("/{id}", 'FuentesController@destroy');
+        Route::get("rastrear/{rastreo}", 'FuentesController@fuentesRastreo');
+        
     });
 
 Route::group(['prefix' => 'configuracion'],
@@ -47,6 +49,14 @@ Route::group(['prefix' => 'crawler'],
         Route::get("/run", "CrawlingController@crawlerRun");
         Route::get("/iniciaparametros", "CrawlingExtController@crawlIniciaParametros");
     });
+
+Route::group(['prefix' => 'catch'], 
+    function(){
+        Route::get("showpage", "CatchController@showpage");
+        // Route::get("/iniciaparametros", "CrawlingExtController@crawlIniciaParametros");
+    });
+
+
 
 
 

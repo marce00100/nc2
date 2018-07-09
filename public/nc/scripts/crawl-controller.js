@@ -24,7 +24,6 @@ app.controller('crawlCtrl', ['$scope', 'comun', '$http', function($scope, comun,
         $scope = $.extend($scope, ctx);
 
         $.get(comun.urlBackend + "parametros/dominioAll", {dominio: 'crawl', codigo: 'running'}, function(res) {
-            
             res.data.forEach(function(elem){
                 ctx[elem.codigo] = elem.valor;
             })

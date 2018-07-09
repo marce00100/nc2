@@ -21,6 +21,8 @@ class CrawlingController extends Controller
         $timeIni   = time();
         $timeIniT  = time();
         $timeTrans = $timeM;
+        $fuentes = crwlExt::fuentesValidas();
+        return response()->json(['f'=>$fuentes]);
 
         while (crwlExt::estadoRunning())
         {
@@ -28,7 +30,7 @@ class CrawlingController extends Controller
             if($timeTrans >= $timeM)
             {
                 $ciclo++;
-                ParametrosController::modificarValor('crawl', 'cicle', $ciclo);
+                ParametrosController::modificarValor('crawl', 'cicles', $ciclo);
                 $timeIni = time();
                 foreach ($fuentes as $fuente)
                 {
@@ -37,7 +39,7 @@ class CrawlingController extends Controller
                     
                     try {
                         // TODO actualizar los vistos en nodos , sincronizar los ciclo para que sea con tareas paralelas
-                        $nodos = $this->crawlFuenteAndNodos($fuente);                      
+                        $this->crawlFuenteAndNodos($fuente);                      
                     } catch (\Exception $e) {
                         crwlExt::insertaError($e, $fuente, null, '' );
                     }
@@ -66,7 +68,6 @@ class CrawlingController extends Controller
 
     public function crawlFuenteAndNodos($fuente)
     {
-        $nodosReturn = array();
         /* xxxxxxxxxxx TODO quitar $contNodos xxxxxxxxxxx */
         $contNodos = 0;
         $tipoFuente  = strtoupper(trim($fuente->fuente_tipo));
@@ -86,18 +87,22 @@ class CrawlingController extends Controller
                     /*xxxx TODO quitar  xxxxxxxxxxxxxxxxxxxxxx*/
                     if($contNodos < 2) {  
                         /* xxxxxxxxxxx */
-                        $existNodoBD = \DB::table('nodos')->where('link', '=', $itemNodo->get_link())->first(); //verifica si ya existe
-                        if ($existNodoBD == null)
-                        {
-                            $nodo = crwlExt::insertarNodo($itemNodo, $fuente->id);
-                            $this->crawlNodoContenido($nodo);
-                            $nodosReturn[] = $nodo->id;
+                        try {
+                            $existNodoBD = \DB::table('nodos')->where('link', '=', $itemNodo->get_link())->first(); //verifica si ya existe
+                            if ($existNodoBD == null)
+                            {
+                                $nodo = crwlExt::insertarNodo($itemNodo, $fuente->id);
+                                $this->crawlNodoContenido($nodo);
+                            }
+                            else if ($existNodoBD != null && $existNodoBD->procesado == 0)
+                            {
+                                $this->crawlNodoContenido($existNodoBD);
+                            }
                         }
-                        else if ($existNodoBD != null && $existNodoBD->procesado == 0)
-                        {
-                            $this->crawlNodoContenido($existNodoBD);
+                        catch(\Exception $e){
+                            crwlExt::insertaError($e, $fuente, $itemNodo, '' );
                         }
-                        /* xxxxxxxxxxx TODO quitar xxxxxxxxxxxxxxxxxxxxxx */
+                    /* xxxxxxxxxxx TODO quitar xxxxxxxxxxxxxxxxxxxxxx */
                     } 
                     $contNodos++; /* xxxxxxxxxxx */
                 }
@@ -148,7 +153,6 @@ class CrawlingController extends Controller
         //******************* descomentar ************************
         \DB::table('fuentes')->where('id', $fuente->id)->update(get_object_vars($fuente));
         //******************* ************************
-        return $nodosReturn;
     }
 
     /**-----------------------------------------------------------------------------------------------------

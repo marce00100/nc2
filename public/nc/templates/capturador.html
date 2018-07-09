@@ -1,0 +1,117 @@
+    <head>
+        <title>Buscador de Feeds de noticias</title>
+        <meta charset="UTF-8">
+        <link rel="shortcut icon" href="../favicon.ico">        
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
+
+
+        <link href="../bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+        <link href="../css/urban.css" rel="stylesheet" type="text/css"/>
+        <link href="../css/fontAwesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+        <link href="../css/estilo.css" rel="stylesheet" type="text/css"/>
+
+    </head>
+    <style media="screen">
+.over{
+    border: 4px dashed red;
+}
+
+</style>
+<div class="row bg-dark-dark " >
+    <h3 class='col-sm-3 fa fa-chain fa-2x ml30'></h3>
+    <div class="col-sm-7"> 
+        <select id="fuentes_m" name="fuentes_m"  style="width:100%;">
+
+        </select>
+        <button id="btn_iniciar" class="btn bg-primary" ng-click="startCrawling()">iniciar</button>
+        <button id="btn_parar" class="btn bg-primary" ng-click="stopCrawling()">parar</button>
+
+   </div>
+
+</div>
+<div id="divUrl"></div>
+
+
+<script src="../bower_components/jquery/dist/jquery.min.js" type="text/javascript"></script>
+<script src="../bower_components/select2/dist/js/select2.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(function(){
+        var cnf = {
+            urlApi : '/www/nc20/public/',
+            color: 'red'
+
+        }
+
+        (fuentesM = function(){
+            $.get('/www/nc20/public/' + 'fuentes/rastrear/M', function(res){
+                console.log(res)
+            })
+        })()
+
+        $("#btn_iniciar").click(function(){
+            $.get(cnf.urlApi + 'catch/showpage', function(res){
+                $("#divUrl").html(res.data);
+                // $.ajax({
+                //     crossOrigin: true,
+                //       //proxy: "http://www.domain.com/path/proxy.php" -> to overide default proxy
+                //       url: res.url,
+                //       success: function(data) {
+                //         $("#divUrl").load(data);
+                //         console.log(data);
+                //     }
+                // });
+                // header("Access-Control-Allow-Origin: *");
+                // $.ajax({
+                //     xhrFields: {
+                //         withCredentials: true
+                //     },
+                //     type: "GET",
+                //     url: res.url,
+                // }).done(function (data) {
+                //     console.log(data);
+                // });
+                // 
+                // $.ajax({
+                //     url: res.url,
+
+                //     dataType: "jsonp",
+                //     success: function( response ) {
+                //         $("#divUrl").html(response);
+                //         console.log( response ); // server response
+                //     }
+
+                // });
+            })
+
+            // $.get(cnf.urlApi + 'catch/showpage', function(res){
+            //     // $("#divUrl").html(res.data);
+            //     $("#divUrl").load( 'http://www.la-razon.com/nacional/Bolivia-Colombia-Santos-presidente-vitsita_0_2801719831.html');
+            // })
+        });
+
+        // fuentesM();
+
+        $('#divUrl').on("mouseenter", "a", function(ev) {
+          $(ev.target).addClass("over");
+          return false;
+        });
+        $('#divUrl').on("mouseleave", "a", function(ev) {
+          $(ev.target).removeClass("over");
+          return false;
+        });
+        $('#divUrl').on("click", "a", function(ev) {
+            console.log($(this).attr('href'));
+            return false;
+          // $(ev.target).removeClass("over");
+          // return false;
+        });
+
+})    
+
+
+
+
+
+
+
+</script>

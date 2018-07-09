@@ -40,12 +40,8 @@
                     </tr> 
                     <tr>
                         <td>Permitir busquedas de esta fuente: </td>
-                        <td>
-                            <div class="material-switch pull-left"  >
-                                <input type="checkbox" id="someSwitchOptionSuccess" name="someSwitchOption001"  ng-model="contexto.permite_rastrear" />
-                                <label for="someSwitchOptionSuccess" class="label-success"></label>
-                            </div>                          
-
+                        <td><select id="cmbPermiteRastrear" ng-model="contexto.permite_rastrear" ng-options="item.id as item.nombre  for item in cla.permiteRastrear"  style="width: 50%">
+                            </select>
                         </td>
                     </tr>
                 </table>  

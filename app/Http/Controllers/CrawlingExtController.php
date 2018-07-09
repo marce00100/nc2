@@ -12,7 +12,7 @@ class CrawlingExtController extends Controller
     public static function fuentesValidas()
     {
         return collect(\DB::select("SELECT *
-                                        FROM fuentes WHERE permite_rastrear ORDER BY prioridad, fuente_nombre "));
+                                        FROM fuentes WHERE permite_rastrear = 'A' ORDER BY prioridad, fuente_nombre "));
     }
 
     public static function estadoRunning()
@@ -27,11 +27,11 @@ class CrawlingExtController extends Controller
     */
     public static function crawlIniciaParametros()
     {
-        $idErrorActual = \DB::table('errores')->max('id');
+        // $idErrorActual = \DB::table('errores')->max('id');
         ParametrosController::modificarValor('crawl', 'running', 1);
         ParametrosController::modificarValor('crawl', 't_ini', Lib::FechaHoraActual());
         ParametrosController::modificarValor('crawl', 'cicles', 0);
-        ParametrosController::modificarValor('crawl', 'error', $idErrorActual == null ? -1 : $idErrorActual);
+        // ParametrosController::modificarValor('crawl', 'error', $idErrorActual == null ? -1 : $idErrorActual);
     }
 
 
@@ -81,6 +81,7 @@ class CrawlingExtController extends Controller
     public static function insertarNodo($itemNodo, $id_fuente)
     {
         $nodo              = new \stdClass();
+        $nodo->id          = lib::UUID();
         $nodo->id_fuente   = $id_fuente;
         $nodo->titulo      = $itemNodo->get_title();
         $nodo->descripcion = $itemNodo->get_description();
@@ -93,8 +94,8 @@ class CrawlingExtController extends Controller
         $nodo->creado_por  = 'user-0';
         $nodo->creado_en   = Lib::FechaHoraActual();
         $nodo->visto = false;
-
-        $nodo->id = \DB::table('nodos')->insertGetId(get_object_vars($nodo));
+        \DB::table('nodos')->insert(get_object_vars($nodo));
+        // $nodo->id = \DB::table('nodos')->insertGetId(get_object_vars($nodo));
         return $nodo;
     }
 
@@ -106,15 +107,15 @@ class CrawlingExtController extends Controller
     public static function insertaError($e, $f, $n, $fase)
     {
         $error = [
-            'id_fuente'     => $f->id,
+            // 'id_fuente'     => $f->id,
             'fuente'        => $f->fuente_nombre,
             'seccion'       => $f->fuente_seccion,
             'fuente_url'    => $f->fuente_url,
             'error'         => $e,
             // 'id_nodo'       => $n->id,
-            // 'nodo_url'      => $n->link,
+            // 'nodo_url'      => $n->get_link(),
             'creado_en'     => Lib::FechaHoraActual(),
-            'fase'          => $fase
+            // 'fase'          => $fase
         ];
         \DB::table('errores')->insert($error);
     }

@@ -44,13 +44,7 @@
                                 <span class="badge {{ item.prioridad == 1 ? 'bg-primary':'bg-info'}} ">{{item.prioridad}}</span>
                                 <a href="{{item.fuente_url}}"><span ng-bind="item.fuente_url"></span></a>                
                             </td>
-                            <td> 
-                                <a href="#/fuentes/editar/{{item.id}}"  >
-                                    <div class="material-switch pull-left">
-                                        <input type="checkbox"  id="someSwitchOptionSuccess" name="someSwitchOption001" ng-model="item.permite_rastrear"  disabled=""/>
-                                        <label for="someSwitchOptionSuccess" class="label-success"></label>
-                                    </div>
-                                </a>
+                            <td><span class="badge {{ item.permite_rastrear == 'N' ? 'bg-danger' : 'bg-success'}}" ng-bind="item.permite_rastrear"></span>
                             </td>
                             <td><span ng-bind="item.titulo"></span></td>
                             <td><span ng-bind="item.descripcion"></span></td>

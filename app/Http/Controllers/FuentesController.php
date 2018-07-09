@@ -70,7 +70,9 @@ class FuentesController extends Controller
                 $fuente->numero_pasadas = 0;
                 $fuente->creado_por     = 'user-0';
                 $fuente->creado_en      = Lib::FechaHoraActual();
-                $fuente->id             = \DB::table('fuentes')->insertGetId(get_object_vars($fuente));
+                $fuente->id             = Lib::UUID();
+                \DB::table('fuentes')->insert(get_object_vars($fuente));
+                // $fuente->id             = \DB::table('fuentes')->insertGetId(get_object_vars($fuente));
                 $mensaje                = "Guardado";
             }
             if ($accion == 'update') {
@@ -104,5 +106,13 @@ class FuentesController extends Controller
         return response()->json([
             "mensaje" => "Fuente eliminada",
         ], 201);
+    }
+
+    public function fuentesRastreo($rastreo)
+    {
+        $fuentes = \DB::select("SELECT * FROM fuentes WHERE permite_rastrear = '{$rastreo}' ORDER by ultima_pasada asc, prioridad asc");
+        return response()->json([
+                                    'data'=> $fuentes
+                                ]);
     }
 }
