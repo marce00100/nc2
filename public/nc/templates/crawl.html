@@ -1,21 +1,32 @@
 
 <div class="container">
     <div> 
-        <br>
-<!--         <button class="btn btn-success btn-icon w200" ng-click="empezarCrawl()" ng-hide="procesandoCrawl"><i class="fa fa-play "></i><span> Empezar rastrillaje</span> </button>
-        <button class="btn bg-success-dark btn-icon w200"    disabled=""        ng-show="procesandoCrawl"><i class="fa fa-play"></i><span> rastreando feeds </span> <i class="fa  fa-window-minimize fa-pulse fa-lg "> </i> </button>
-        
-        <button class="btn bg-orange btn-icon w200" ng-click="iniciarDetenerCrawl(0)"><i class="fa fa-stop "></i><span> Detener</span> </button> -->
-
-        <button id="btn_iniciar" class="btn bg-primary" ng-click="startCrawling()">iniciar</button>
-        <button id="btn_parar" class="btn bg-primary" ng-click="stopCrawling()">parar</button>
-
-        <!--<button class="btn btn-success btn-icon" ng-click="test()"><i class="fa fa-play "></i><span> test</span> </button>-->
-
-        <br>
-        <br>
-
-
+        <div class="row">
+            <div  class="col-md-12" >
+                <button id="btn_iniciar" ng-click="fn.startCrawling()" ng-hide="cx.running == 1"  class="btn btn-sm btn-success dark m5 br4"><i class="fa fa-play fa-lg text-white"></i> Iniciar </button>
+                <span  ng-show="cx.running == 1" class="btn btn-sm btn-success  m5 br4"><i class="fa fa-circle-o-notch fa-spin fa-lg fa-fw text-white "></i> Procesando ... </span>
+                <button id="btn_parar" ng-click="fn.stopCrawling()" class="btn btn-sm btn-danger dark m5 br4"><i class="fa fa-stop fa-lg  text-white"></i> Parar</button>
+            </div>
+        </div>
+    </div>
+    <div class="tray tray-center p40 va-t posr">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-visible" id="spy2">
+                    <div class="panel-heading  bg-primary dark">
+                        <div class="panel-title ">
+                            <i class="glyphicon glyphicon-tasks" ></i><span class="sp_politica" ng-bind="cx.estado">_</span>
+                        </div>
+                    </div>
+                    <div class="panel-body pn">
+                        <div class="row">
+                            <div id="div_noticias" class="col-md-12" > 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>

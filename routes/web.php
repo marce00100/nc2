@@ -20,9 +20,11 @@ Route::get('/', function () {
 
 Route::group(['prefix'=> 'fuentes'], 
     function(){
-        Route::get("/", 'FuentesController@index');
-        Route::get("/{id}", 'FuentesController@show');
-        Route::post("/", 'FuentesController@store');
+        Route::get("/listar", 'FuentesController@listar');
+        Route::get("/listarfuentes", 'FuentesController@obtenerFuentes');
+        
+        Route::get("/{id}", 'FuentesController@getFuente');
+        Route::post("/", 'FuentesController@guardar');
         Route::delete("/{id}", 'FuentesController@destroy');
         Route::get("rastrear/{rastreo}", 'FuentesController@fuentesRastreo');
         
@@ -38,21 +40,21 @@ Route::group(['prefix' => 'configuracion'],
     });
 
 
-// Route::get("crawl/validosCrawl", "CrawlController@validosCrawl"); // fuentes validas para realizar crawl,
-// Route::get("crawl/obtieneDatos", "CrawlController@obtieneDatos"); 
-// Route::get("crawl/fuente/{id}", "CrawlController@crawlFuente");
-// Route::get("crawl/nodoContenido/{id}", "CrawlController@crawlNodoContenido");
-
-/////////////////// UPGRADE
 Route::group(['prefix' => 'crawler'], 
     function(){
         Route::get("/run", "CrawlingController@crawlerRun");
         Route::get("/iniciaparametros", "CrawlingExtController@crawlIniciaParametros");
+        Route::get("/conteo", "CrawlingExtController@conteo");
+
+        Route::get("getNoticiasGrupo", "CrawlingExtController@getNoticiasGrupo");
     });
+
+
+
 
 Route::group(['prefix' => 'catch'], 
     function(){
-        Route::get("showpage", "CatchController@showpage");
+        Route::post("showpage", "CatchController@showpage");
         // Route::get("/iniciaparametros", "CrawlingExtController@crawlIniciaParametros");
     });
 

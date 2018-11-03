@@ -1,19 +1,11 @@
 // constantes y variables de config
 
-var app = angular.module('appNews', ['ngRoute', 'ngSanitize', 'ui.bootstrap']);
+var app = angular.module('appNews', ['ngRoute', 'ngSanitize', 'ui.bootstrap', 'jqwidgets']);
 app.config(['$routeProvider', function($routeProvider) {
         $routeProvider
             .when('/fuentes', {
                 templateUrl: "templates/fuentes-lista.html",
                 controller: "fuentesInicioCtrl"
-            })
-            .when('/fuentes/nueva', {
-                templateUrl: "templates/fuentes-form.html",
-                controller: "fuentesNuevaCtrl"
-            })
-            .when('/fuentes/editar/:id', {
-                templateUrl: "templates/fuentes-form.html",
-                controller: "fuentesEditarCtrl"
             })
             .when('/crawl', {
                 templateUrl: "templates/crawl.html",
@@ -27,10 +19,10 @@ app.config(['$routeProvider', function($routeProvider) {
                 templateUrl: "templates/bandeja-exploracion.html",
                 controller: "bandejaExploracionCtrl"
             })
-            // .when('/capturador', {
-            //     templateUrl: "templates/capturador.html",
-            //     controller: "capturadorCtrl"
-            // })
+            .when('/capturador', {
+                templateUrl: "templates/capturador.html",
+                controller: "capturadorCtrl"
+            })
             .otherwise({
                 redirectTo: '/fuentes'
             });
@@ -41,7 +33,7 @@ app.config(['$routeProvider', function($routeProvider) {
         // fac.urlBackend = '/www/nc21/public/index.php/'; //'/newsCrawler-b/public/index.php/'; //
         fac.urlBackend = '/www/nc20/public/';
         fac.colocarSubtitulo = function(sub) {
-            $rootScope.subtitulo = sub;
+            $rootScope.template.titulo = sub;
         };
         fac.menu = function(indice) {
             alert(indice);
@@ -55,10 +47,10 @@ app.config(['$routeProvider', function($routeProvider) {
     .controller('AppCtrl', ['$rootScope', 'comun', '$scope',
         function AppCtrl($rootScope, comun, $scope) {
             $scope.estiloAlert = {
-                '1': 'bg-danger-dark',
+                '1': 'bg-danger dark',
                 '2': 'bg-warning',
-                '3': 'bg-orange',
-                '4': 'bg-success-dark'
+                '3': 'bg-warning dark',
+                '4': 'bg-success dark'
             }
 
             $scope.cla = {
@@ -76,6 +68,13 @@ app.config(['$routeProvider', function($routeProvider) {
                     { 'id':'M',  'nombre':'Manual'}, 
                 ]
             }
+
+            $rootScope.template = {
+                titulo : '',
+                styleHeading: 'bg-primary ',
+            };
+
+
 
             $.ajaxSetup({
 

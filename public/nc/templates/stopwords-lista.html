@@ -1,48 +1,59 @@
 
 <div class="container">
-    <div >
-        <br>
-        <h3>Listado de palabras-stopwords del sistema.</h3><br>
-        <div class="row">
-            <div class="col-md-3"><button class="btn btn-success btn-icon" ng-click="muestraFormSW()"><i class="fa fa-plus"></i> <span> Agregar una palabra</span></button></div>
-            <div class="col-md-2">Total palabras: <b>{{lista.length}}</b></div>
-            <div class="col-md-7" align="left"><span style="padding: 0px 120px">búsqueda: <input type="text" ng-model="busqueda" style="width: 300px"></span></div>
 
+    <div class="panel" >
+        <div class="panel-heading text-center bg-dark">
+            <span class="panel-title text-left"> Listado de palabras-stopwords del sistema.</span>
         </div>
-        <div class="table-responsive" style="height: 600px">
-            <table id="breakingBadChar" class="table table-hover" > 
-                <thead>
-                    <tr>    
-                        <th>N</th>
-                        <th>Palabra</th>
-                        <th>Categorías</th>                        
-                        <th>activo</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="item in lista| filter: busqueda | orderBy:'palabra'">   
-                        <td>{{$index + 1}} - id: {{item.id}}</td>
-                        <td><span ng-bind="item.palabra"></span></td>
-                        <td><span ng-bind="item.categoria"></span></td>
-                        <td> 
-                            <!--                            <a href="#/fuentes/editar/{{item._id}}"  >-->
-                            <div class="material-switch pull-left">
-                                <input type="checkbox"  id="someSwitchOptionSuccess" name="someSwitchOption001" ng-model="item.activa"  disabled=""/>
-                                <label for="someSwitchOptionSuccess" class="label-success"></label>
-                            </div>
-                            <!--</a>-->
-                        </td>
-                        <td><a href="" ng-click="muestraFormSW(item.id, $index)" class="glyphicon glyphicon-pencil " ></a>
-                            <a href="" ng-click="eliminar(item.id, $index)" ><span class="glyphicon glyphicon-trash"></span></a></td>                        
-                    </tr>
-                </tbody>
-            </table>
+        <div class="panel-body">
+            <h4>Total fuentes: <strong  class="text-primary">{{lista.length}} </strong></h4>
+            <div class="row">
+                <div id="estructura" class="col-md-12" >
+                    <div class="row">
+                        <div class="col-md-3"><button class="btn btn-success btn-icon" ng-click="muestraFormSW()"><i class="fa fa-plus"></i> <span> Agregar una palabra</span></button></div>
+                        <div class="col-md-2">Total palabras: <b>{{lista.length}}</b></div>
+                        <div class="col-md-7" align="left"><span style="padding: 0px 120px">búsqueda: <input type="text" ng-model="busqueda" style="width: 300px"></span></div>
+
+                    </div>
+
+                    <div class="table-responsive" style="height: 600px">
+                        <table id="breakingBadChar" class="table table-hover" > 
+                            <thead>
+                                <tr>    
+                                    <th>N</th>
+                                    <th>Palabra</th>
+                                    <th>Categorías</th>                        
+                                    <th>activo</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in lista| filter: busqueda | orderBy:'palabra'">   
+                                    <td>{{$index + 1}} - id: {{item.id}}</td>
+                                    <td><span ng-bind="item.palabra"></span></td>
+                                    <td><span ng-bind="item.categoria"></span></td>
+                                    <td> 
+                                        <!--                            <a href="#/fuentes/editar/{{item._id}}"  >-->
+                                        <div class="material-switch pull-left">
+                                            <input type="checkbox"  id="someSwitchOptionSuccess" name="someSwitchOption001" ng-model="item.activa"  disabled=""/>
+                                            <label for="someSwitchOptionSuccess" class="label-success"></label>
+                                        </div>
+                                        <!--</a>-->
+                                    </td>
+                                    <td><a href="" ng-click="muestraFormSW(item.id, $index)" class="glyphicon glyphicon-pencil " ></a>
+                                        <a href="" ng-click="eliminar(item.id, $index)" ><span class="glyphicon glyphicon-trash"></span></a></td>                        
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                </div>
+            </div>
         </div>
-
-
-
     </div>
+
+
 </div>
 
 <script type="text/ng-template" id="stopword-form_.html">

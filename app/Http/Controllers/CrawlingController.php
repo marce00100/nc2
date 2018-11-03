@@ -65,7 +65,6 @@ class CrawlingController extends Controller
     | actualiza la tabla de Fuentes y Realiza las inserciones
     | de cada uno de los items en la Tabla nodos
      */
-
     public function crawlFuenteAndNodos($fuente)
     {
         /* xxxxxxxxxxx TODO quitar $contNodos xxxxxxxxxxx */
@@ -91,7 +90,7 @@ class CrawlingController extends Controller
                             $existNodoBD = \DB::table('nodos')->where('link', '=', $itemNodo->get_link())->first(); //verifica si ya existe
                             if ($existNodoBD == null)
                             {
-                                $nodo = crwlExt::insertarNodo($itemNodo, $fuente->id);
+                                $nodo = crwlExt::insertarNodo($itemNodo, $fuente, uniqid());
                                 $this->crawlNodoContenido($nodo);
                             }
                             else if ($existNodoBD != null && $existNodoBD->procesado == 0)
@@ -218,11 +217,16 @@ class CrawlingController extends Controller
         \DB::table('normalizados')->insert(get_object_vars($normalizado));
             //        ********************************
         $nodo->procesado = 1;
+        $nodo->estado = '2';
         \DB::table('nodos')->where('id', $nodo->id)->update(get_object_vars($nodo));
         $estado = 'success';
 
         
     }
+
+
+
+        
 
 
 

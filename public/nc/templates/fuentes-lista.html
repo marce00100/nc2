@@ -1,63 +1,248 @@
-
+<style type="text/css">
+    .popup-basic {
+  position: relative;
+  background: #FFF;
+  width: auto;
+  max-width: 700px;
+  margin: 40px auto;
+}
+</style>
 <div class="container-fluid">
     <div >
         <br>
-        <div class="row ">
-            <div class="col-md-1"></div>
-            <div class="col-md-3">
-                <a href="#/fuentes/nueva" class="btn btn-success btn-icon"><i class="glyphicon glyphicon-plus"></i> <span> Agregar una fuente</span></a>
+
+        <div class="panel" >
+            <div class="panel-heading text-center {{template.styleHeading}}">
+                <span class="panel-title "> Listado de las fuentes automaticas de rastreo RSS y de información</span>
             </div>
-            <div class="col-md-3" >
-                <b>Total fuentes: {{lista.length}}</b>
-            </div>
-            <div  class="col-md-5">
-                <span style="padding: 0px 120px">búsqueda: <input type="text" ng-model="busqueda" style="width: 300px"></span>
-            </div>
-        </div>
-        <div class=" row  listaItems">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
-                <table id="breakingBadChar" class="table table-hover" > 
-                    <thead>
-                        <tr> 
-                            <th></th>
-                            <th>Fuente</th>
-                            <th>Sección</th>
-                            <th>URL - prioridad</th>                        
-                            <th>Rastrear</th>
-                            <th>Título</th>
-                            <th>Descripción</th>
-                            <th>Ultimo rastreo</th>
-                            <th>Num. rastreos</th>
-                            <th>Vigente</th>
-                            <th>items</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="item in lista| filter: busqueda" >    
-                            <td>{{$index + 1}}</td>
-                            <td><a href="#/fuentes/editar/{{item.id}}"  ><b> <span ng-bind="item.fuente_nombre"></span></b></a></td>
-                            <td>
-                                <b><span ng-bind="item.fuente_seccion"></span></b></td>
-                            <td>
-                                <span class="badge {{ item.prioridad == 1 ? 'bg-primary':'bg-info'}} ">{{item.prioridad}}</span>
-                                <a href="{{item.fuente_url}}"><span ng-bind="item.fuente_url"></span></a>                
-                            </td>
-                            <td><span class="badge {{ item.permite_rastrear == 'N' ? 'bg-danger' : 'bg-success'}}" ng-bind="item.permite_rastrear"></span>
-                            </td>
-                            <td><span ng-bind="item.titulo"></span></td>
-                            <td><span ng-bind="item.descripcion"></span></td>
-                            <td><span ng-bind="item.ultima_pasada"></span></td>
-                            <td><span ng-bind="item.numero_pasadas"></span></td>
-                            <td>{{item.vigente?'S':'N'}}</td>
-                            <td><b><span ng-bind="item.nodos"></span></b></td>
-                            <td><a href="#/fuentes/editar/{{item.id}}" class="glyphicon glyphicon-pencil" title="editar" ></a>
-                                <a href="" ng-click="eliminar(item.id, $index)" ><span class="glyphicon glyphicon-trash" title="eliminar"></span></a></td>                        
-                        </tr>
-                    </tbody>
-                </table>         
+            <div class="panel-body">
+                <h4>Total fuentes: <strong  class="text-primary">{{lista.length}} </strong></h4>
+                <div class="row">
+                    <div id="estructura" class="col-md-12" >
+                        <a  ng-click="fn.nuevo()" id="nuevo" type="button" class="btn btn-sm btn-success dark m5  br6 "><i class="fa fa-plus-circle text-white"></i> Agregar fuente</a>
+                        <div id="dataTable"></div>
+                    </div>
+                </div>
             </div>
         </div>
+
     </div>
 </div>
+
+
+
+<div id="fuente_seccion_modal" class="white-popup-block popup-basic admin-form mfp-with-anim mfp-hide" >
+    <form method="post" action="javascript:void(0)" id="fuente_form">
+        <div class="panel" >
+            <div class="panel-heading  {{template.styleHeading}}">
+                <span class="panel-title text-white "><i class="glyphicons glyphicons-riflescope"></i> <span class="panel-title text-white"> FUENTE </span></span>
+            </div>
+            <div class="panel-body">
+                <div  class="col-md-12" >
+                        <div id="mensaje"></div>
+                        <h4 class="bg-dark p5">Fuente principal</h4>
+                        <div class="form-horizontal"> 
+                            <input type="hidden" ng-model="fuente.id" name="">
+
+
+                            <div class="form-group">
+                                <label for="id_fuente" class="field-label col-md-3">Fuente</label>
+                                <div class="col-md-9">
+                                    <label class="field select prepend-icon">
+                                        <select id="if_fuente" ng-model="ctx.fuenteSeccion.id_fuente" ng-options="item.id as item.fuente_nombre  for item in ctx.fuentes" ng-change="fn.cambiaFuenteForm()" >
+                                        </select>
+                                        <i class="arrow"></i>
+                                    </label>   
+                                    <label class="bg-default fs15 mt5">{{ctx.fuenteSeccion.pais}} / {{ctx.fuenteSeccion.ciudad}}</label>            
+                                </div>
+                            </div>
+
+
+
+
+                            <h4  class="bg-dark p5">Seccion</h4>
+
+                            <div class="form-group">
+                                <label for="fuente_seccion" class="field-label col-md-3">Nombre sección</label>
+                                <div class="col-md-9">
+                                    <label class="field prepend-icon">
+                                        <input type="text" id="fuente_seccion" name="fuente_seccion" ng-model="ctx.fuenteSeccion.fuente_seccion" class="form-control" placeholder="sección"  >
+                                        <label for="fuente_seccion" class="field-icon"><i class=" fa fa-dot-circle-o"></i>
+                                        </label>
+                                    </label>             
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="fuente_url" class="field-label col-md-3">URL</label>
+                                <div class="col-md-9">
+                                    <label class="field prepend-icon">
+                                        <input type="text" id="fuente_url" name="fuente_url" ng-model="ctx.fuenteSeccion.fuente_url" class="form-control" placeholder="url" >
+                                        <label for="fuente_url" class="field-icon"><i class=" fa fa-dot-circle-o"></i>
+                                        </label>
+                                    </label>             
+                                </div>
+                            </div>
+
+                            
+                            <hr>
+
+                            <div class="form-group col-md-4 ml10">
+                                <label for="cmbFuenteTipo" class="field-label">Tipo fuente</label>
+                                <div class="">
+                                    <label class="field select prepend-icon">
+                                        <select id="cmbFuenteTipo" ng-model="ctx.fuenteSeccion.fuente_tipo" ng-options="item.id as item.nombre for item in cla.fuenteTipo" >
+                                        </select>
+                                        <i class="arrow"></i>
+                                    </label>  
+                                </div>           
+
+                            </div>
+
+                            <div class="form-group col-md-4 ml10">
+                                <label for="cmbFuentePrioridad" class="field-label">Prioridad</label>
+                                <div class="">
+                                    <label class="field select prepend-icon">
+                                        <select id="cmbFuentePrioridad" ng-model="ctx.fuenteSeccion.prioridad" ng-options="item.id as item.nombre for item in cla.prioridad" >
+                                        </select>
+                                        <i class="arrow"></i>
+                                    </label>  
+                                </div>           
+
+                            </div>
+
+                            <div class="form-group col-md-4 ml10">
+                                <label for="cmbPermiteRastrear" class="field-label">Tipo de Búsqueda</label>
+                                <div class="">
+                                    <label class="field select prepend-icon">
+                                        <select id="cmbPermiteRastrear" ng-model="ctx.fuenteSeccion.permite_rastrear" ng-options="item.id as item.nombre  for item in cla.permiteRastrear"  >
+                                        </select>
+                                        <i class="arrow"></i>
+                                    </label>  
+                                </div>           
+
+                            </div>
+
+
+
+
+                            <button ng-click="guardar()" class="btn btn-success btn-icon"><i class="fa fa-check"></i> <span> Guardar</span></button> 
+                            <a href="javascript:void(0)" class="btn btn-primary btn-icon" ng-click="fn.cerrarModal()"><i class="glyphicons glyphicons-remove_2"></i> <span> Cerrar</span></a>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+</div>
+
+<div id="fuente_modal" class="white-popup-block popup-basic admin-form mfp-with-anim mfp-hide" >
+    <form method="post" action="javascript:void(0)" id="fuente_form">
+        <div class="panel" >
+            <div class="panel-heading  {{template.styleHeading}}">
+                <i class="glyphicons glyphicons-riflescope"></i>
+            </div>
+            <div class="panel-body">
+                <div  class="col-md-12" >
+                        <div id="mensaje_fuente"></div>
+                        <div class="form-horizontal"> 
+                            <input type="hidden" ng-model="fuente.id" name="">
+                            <div class="form-group">
+                                <label for="fuente_nombre" class="field-label col-md-3">Nombre fuente</label>
+                                <div class="col-md-9">
+                                    <label class="field prepend-icon">
+                                        <input type="text" id="fuente_nombre" name="fuente_nombre" ng-model="ctx.fuente.fuente_nombre" class="form-control" placeholder="nombre fuente" >
+                                        <label for="fuente_nombre" class="field-icon"><i class=" fa fa-dot-circle-o"></i>
+                                        </label>
+                                    </label>             
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="pais" class="field-label col-md-3">Pais</label>
+                                <div class="col-md-9">
+                                    <label class="field prepend-icon">
+                                        <input type="text" id="pais" name="pais" ng-model="ctx.fuente.pais" class="form-control" placeholder="nombre fuente" >
+                                        <label for="pais" class="field-icon"><i class=" fa fa-dot-circle-o"></i>
+                                        </label>
+                                    </label>             
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ciudad" class="field-label col-md-3">Ciudad</label>
+                                <div class="col-md-9">
+                                    <label class="field prepend-icon">
+                                        <input type="text" id="ciudad" name="ciudad" ng-model="ctx.fuente.ciudad" class="form-control" placeholder="nombre fuente" >
+                                        <label for="ciudad" class="field-icon"><i class=" fa fa-dot-circle-o"></i>
+                                        </label>
+                                    </label>             
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+
+<div id="modal_propiedadesseccion"  class="white-popup-block popup-basic admin-form mfp-with-anim mfp-hide" >
+    <h5><b>Elementos propios de la fuente (RSS, Atom, XML, WEB, ...)</b></h5>
+    <div style="margin: 20px 100px; padding: 20px; border: 1px solid grey">
+        <table>
+            <tr>
+                <td><b>Título: </b></td>
+                <td><span ng-bind="ctx.fuente.titulo" ></span></td>
+            </tr>
+            <tr>
+                <td><b>Link: </b></td>
+                <td><span ng-bind="ctx.fuente.link"></span></td>
+            </tr>
+            <tr>
+                <td><b>Descripcción: </b></td>
+                <td><span ng-bind="ctx.fuente.descripcion"></span></td>
+            </tr>
+            <tr>
+                <td><b>Tipo: </b></td>
+                <td><span ng-bind="ctx.fuente.tipo"></span></td>
+            </tr>
+            <tr>
+                <td><b>Ultima publicación: </b></td>
+                <td><span ng-bind="ctx.fuente.ultima_pub"></span></td>
+            </tr>
+            <tr>
+                <td><b>Ultimo rastrillaje: </b></td>
+                <td><span ng-bind="ctx.fuente.ultima_pasada"></span></td>
+            </tr> 
+            <tr>
+                <td><b>Lenguaje: </b></td>
+                <td><span ng-bind="ctx.fuente.lenguaje"></span></td>
+            </tr>
+            <tr>
+                <td><b>Fuente vigente: </b></td>
+                <td><span ng-bind="ctx.fuente.vigente"></span></td>
+            </tr>
+            <tr>
+                <td><b>Numero de pasadas (rastreos): </b></td>
+                <td><span ng-bind="ctx.fuente.numero_pasadas"></span></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+

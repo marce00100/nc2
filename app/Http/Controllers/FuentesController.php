@@ -8,21 +8,16 @@ use Illuminate\Http\Request;
 class FuentesController extends Controller
 {
     
-    public function index()
+    public function listar()
     {
         $fuentes = \DB::select("
-            SELECT f.id, f.fuente_url, f.fuente_nombre, f.fuente_seccion,  f.fuente_tipo,
-            f.pais, f.ciudad, f.permite_rastrear,
-            f.titulo, f.link, f.descripcion, f.ultima_pub, f.vigente,
-            f.numero_pasadas, f.ultima_pasada, f.lenguaje, f.prioridad,
-            case when f.numero_pasadas = 0 then 0 else count(*) end as nodos
-            FROM fuentes f left join nodos n on f.id = n.id_fuente
-            GROUP BY f.id, f.fuente_url, f.fuente_nombre, f.fuente_seccion,  f.fuente_tipo,
-            f.pais, f.ciudad, f.permite_rastrear,
-            f.titulo, f.link, f.descripcion, f.ultima_pub, f.vigente,
-            f.numero_pasadas, f.ultima_pasada, f.lenguaje, f.prioridad
-
-            ORDER BY f.prioridad, f.fuente_nombre, f.fuente_seccion  ");
+                                SELECT f.id as id_fuente, f.fuente_nombre, f.pais, f.ciudad, 
+                                s.id as id_seccion, s.url, s.seccion, s.tipo, 
+                                s.permite_rastrear, s.prioridad, s.titulo, s.link, s.descripcion, s.lenguaje, s.vigente, s.numero_pasadas, 
+                                       s.ultima_pub, s.ultima_pasada
+                                FROM fuentes f, secciones s 
+                                WHERE s.id_fuente = f.id
+                                ORDER BY f.fuente_nombre, s.seccion  ");
 
         return response()->json([
             "estado"  => "success",
@@ -31,7 +26,16 @@ class FuentesController extends Controller
         ], 200);
     }
 
-    public function show($id)
+    public function obtenerFuentes()
+    {
+        $fuentes = \DB::select("SELECT * from fuentes");
+        return response()->json([
+            'data' => $fuentes,
+            'estado' => 'success'
+        ]);
+    }
+
+    public function getFuente($id)
     {
         $fuente = \DB::table('fuentes')->find($id);
         return response()->json([
@@ -41,11 +45,10 @@ class FuentesController extends Controller
         ], 200);
     }
 
-    public function store(Request $request)
+    public function guardar(Request $request)
     {
         $mensaje = "";
         $accion  = $request->id == null ? 'insert' : 'update';
-        $id      = $request->id;
 
         $fuente                   = new \stdClass();
         $fuente->fuente_url       = trim($request->fuente_url);
@@ -95,9 +98,8 @@ class FuentesController extends Controller
         return response()->json([
             "estado"  => $mensaje == "Guardado" ? "success" : "exist",
             "mensaje" => $mensaje,
-            "fuente"  => $fuente,
-            "id"      => $id,
-        ], 201);
+            "fuente" => $fuente
+        ]);
     }
 
     public function destroy($id)

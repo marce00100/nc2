@@ -1,124 +1,245 @@
-app.controller('fuentesInicioCtrl', ['$scope', 'comun', '$http', function($scope_, comun_, $http) {
-        $scope_.modulo = 1;
-        comun_.colocarSubtitulo("Fuentes de Noticias");
-        $http.get(comun_.urlBackend + 'fuentes').success(function(respuesta) {
-            $scope_.lista = respuesta.fuentes;
-        });
-            $http.get(comun_.urlBackend + "parametros/dominioAll", {params : {dominio: 'crawl'}}).success(function (res) {});
-        $scope_.eliminar = function(id, $index) {
+
+app.controller('fuentesInicioCtrl', ['$scope', 'comun', '$http', function($scope, comun, $http) {
+
+    var ctx = {
+        listaSecciones: [],
+        fuentes:[],
+        fuenteSeccion: {},
+        mensaje: {
+            texto: '',
+            estilo: $scope.estiloAlert[4],
+            mostrar: false
+        },        
+
+    }
+
+    var fn = {
+        cargarlista: function(){
+            $http.get(comun.urlBackend + 'fuentes/listar').success(function(respuesta) {
+                ctx.listaSecciones = respuesta.fuentes;
+
+                var dataAdapter = new jqx.dataAdapter({
+                    dataType: "json",
+                    localdata: ctx.listaSecciones,
+                    dataFields: [
+                    { name: 'id_fuente', type: 'int' },
+                    { name: 'fuente_nombre', type: 'string' },
+                    { name: 'pais', type: 'string' },
+                    { name: 'ciudad', type: 'string' },
+                    { name: 'id_seccion', type: 'int' },
+                    { name: 'seccion', type: 'string' },                
+                    { name: 'url', type: 'string' },                
+                    { name: 'tipo', type: 'string' },                
+                    { name: 'permite_rastrear', type: 'string' },                
+                    { name: 'prioridad', type: 'int' },                
+                    { name: 'ultima_pasada', type: 'date' },                
+                    { name: 'numero_pasadas', type: 'int' },                
+                    { name: 'vigente', type: 'bool' },                          
+                    ],
+                });
+
+                $("#dataTable").jqxDataTable({
+                    source: dataAdapter,
+                    altRows: true,
+                    sortable: true,
+                    width: "100%",
+                    filterable: true,
+                    columnsResize: true,
+                    filterMode: 'simple',
+                    selectionMode: 'singleRow',
+                    // localization: getLocalization('es'),
+                    columns: [
+                        { text: 'Fuente nombre', dataField: 'fuente_nombre',},
+                        { text: 'Sección', dataField: 'seccion',},
+                        { text: 'Prioridad-Url', cellsRenderer: function(row, column, value,  rowData){
+                            return `<span class="badge ${ rowData.prioridad == 1 ? 'bg-primary':'bg-info'} "> ${rowData.prioridad}</span>
+                            <a href="${rowData.url}"><span> ${rowData.url}"</span></a>`;
+                            } 
+                        },
+                        { text: 'Rastreo', dataField: 'permite_rastrear', width:35, cellsRenderer: function(row, column, value, rowData){
+                            return `<span class="badge ${ value == 'N' ? 'bg-danger' : 'bg-success'}" >${value}</span>`;
+                            }
+                        },
+                        { text: '-', width: 50, align:'center',  cellsalign: 'center', cellClassName: function(){ return 'bg-white darker'}, cellsRenderer: function(row, column, value, rowData){
+                            return `<a href="" ng-click="fn.editar()" ><span class="fa fa-edit text-warning" title="editar"></span></a>
+                            <a href="" ng-click="fn.eliminar('${rowData.id}', ${rowData.index})" ><span class="fa fa-minus-circle text-danger" title="eliminar"></span></a>`;
+                            }
+                        },
+                        { text: 'Ult.Rastreo', dataField: 'ultima_pasada', width: 150, cellsformat: 'dd/MM/yyyy'},
+                        { text: 'N rastreos', dataField: 'numero_pasadas', width: 60},
+                        { text: 'Vig.', dataField: 'vigente', width: 40, cellsRenderer:function(row, value){ 
+                            return `<strong class="${value ? 'text-success' : 'text-danger'} "> ${value ? 'S': 'N'} </strong>`;} 
+                        }
+                    ]
+                });
+            });
+
+        },
+        cargarFuentesForm:function(){
+            $http.get(comun.urlBackend + 'fuentes/listarfuentes').success(function(respuesta) {
+                ctx.fuentes = respuesta.data;
+            });
+        },
+        cambiaFuenteForm: function(){
+            var fuenteSel = ctx.fuentes.find(f =>  f.id == ctx.fuenteSeccion.id_fuente);
+            ctx.fuenteSeccion.pais = fuenteSel.pais;
+            ctx.fuenteSeccion.ciudad = fuenteSel.ciudad;
+        },
+        nuevo: function(){
+            fn.setForm('nuevo');
+            fn.showmodal();
+        }, 
+        editar: function(){
+            fn.setForm('editar');
+            fn.showmodal();
+        },
+        setForm: function(op){
+            if(op=='nuevo'){
+                ctx.fuente = {
+                fuente_tipo: "RSS",
+                prioridad: "2", // prioridad normal
+                permite_rastrear: 'A'
+                }
+            }
+            else if(op=='siguiente'){
+                ctx.fuente = {
+                    fuente_nombre : ctx.fuenteSeccion.fuente_nombre,
+                    fuente_tipo: "RSS",
+                    prioridad: "2", // prioridad normal
+                    permite_rastrear: 'A'
+                }
+            }
+            else if(op=='editar'){
+                var rowSelected = $("#dataTable").jqxDataTable('getSelection');
+                console.log(rowSelected)
+
+            }
+            // $http.get(comun.urlBackend + 'fuentes/' + id).success(function(res) {
+            //     ctx.fuente = res.fuente;
+            //     ctx.fuenteSeccion.prioridad = ctx.fuenteSeccion.prioridad.toString();
+            // });
+        },
+        validateRules: function(){
+            var reglasVal = {
+                    errorClass: "state-error",
+                    validClass: "state-success",
+                    errorElement: "em",
+
+                    rules: {
+                        fuente_nombre: { required: true },
+                        fuente_seccion:  { required: true },
+                        fuente_url: { required: true }
+                    },
+
+                    messages:{
+                        fuente_nombre: { required: 'Debe escribir un nombre de la fuente principal' },
+                        fuente_seccion:  { required: 'Debe escribir una sección' },
+                        fuente_url:  { required: 'La url no puede estar vacía' }
+                    },
+
+                    highlight: function(element, errorClass, validClass) {
+                            $(element).closest('.field').addClass(errorClass).removeClass(validClass);
+                    },
+                    unhighlight: function(element, errorClass, validClass) {
+                            $(element).closest('.field').removeClass(errorClass).addClass(validClass);
+                    },
+                    errorPlacement: function(error, element) {
+                        if (element.is(":radio") || element.is(":checkbox")) {
+                                element.closest('.option-group').after(error);
+                        } else {
+                                error.insertAfter(element.parent());
+                        }
+                    },
+                    submitHandler: function(form) {
+                        fn.saveData();
+                    }
+            }
+            return reglasVal; 
+        }, 
+        saveData: function() {
+            $http.post(comun.urlBackend + "fuentes", $scope.ctx.fuente).success(function(resp) {
+                if (resp.estado == "success") {
+                   fn.setForm('siguiente');
+                   new PNotify({
+                                title:'Guardado correctamente',
+                                text: '',
+                                shadow: true,
+                                opacity: 0.9,
+                                // addclass: noteStack,
+                                type: "success",
+                                // stack: Stacks[noteStack],
+                                // width: findWidth(),
+                                delay: 1500
+                            });
+                    $.magnificPopup.close(); 
+
+                } else {
+                    $("#mensaje").html(`<div class="bg-danger">${resp.mensaje}</div>` );
+                }
+            });
+            
+        },
+
+        eliminar: function(id, $index) {
             var elimina = confirm("Esta seguro de eliminar esta fuente ??");
             if (elimina) {
                 $http.delete(comun_.urlBackend + 'fuentes/' + id).success(function(resp) {
                     if (resp.mensaje) {
-                        $scope_.lista.splice($index, 1);
+                       ctx.listaSecciones.splice($index, 1);
                     }
                 });
 
             }
+        },
+        showmodal: function(){
+            $(".state-error").removeClass("state-error")
+            $("#form-plan em").remove();
+                    // Inline Admin-Form example
+            $.magnificPopup.open({
+                removalDelay: 500, //delay removal by X to allow out-animation,
+                focus: '#focus-blur-loop-select',
+                items: {
+                    src: "#fuente_seccion_modal"
+                },
+                // overflowY: 'hidden', //
+                callbacks: {
+                    beforeOpen: function(e) {
+                        var Animation = "mfp-zoomIn";
+                        this.st.mainClass = Animation;
+                    }
+                },
+                midClick: true // allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source.
+            });
+        },
+        cerrarModal: function(){
+            $.magnificPopup.close();
         }
-    }])
-    .controller('fuentesNuevaCtrl', ['$scope', 'comun', '$http', function($scope, comun, $http) {
+
+    }
+
+
+
+    var listeners =  function (){
+
+    }
+
+    var init =  (function(){
         $scope.modulo = 1;
-        comun.colocarSubtitulo("Fuentes de Noticias");
-        $scope.mensaje = {
-            texto: '',
-            estilo: $scope.estiloAlert[4],
-            mostrar: false
-        };
-        //            $scope.mensaje = mensaje;
+        $scope.template.titulo = "Fuentes de Noticias";
 
-        function setNuevo() {
-            $scope.contexto = {
-                fuente_tipo: "RSS",
-                prioridad: "2", // prioridad normal
-                permite_rastrear: true
-            };
-        }
+        $scope.ctx = ctx;
+        $scope.fn = fn;
 
-        setNuevo();
-
-        angular.element("#formFuente input, #formFuente select ").keyup(function(event) {
-            angular.element("#div_mensaje").hide(200);
-        });
-
-// $(function(){ 
-//     $("txtFuenteNombre ").click(function(){
-//         console.log("nninin")
-//     })
-// })
-        $scope.guardar = function() {
-            $scope.mensaje.mostrar = true;
-            if ($scope.contexto.fuente_nombre === '' || $scope.contexto.fuente_seccion === '' || $scope.contexto.fuente_url === '' ||
-                $scope.contexto.fuente_nombre === undefined || $scope.contexto.fuente_seccion === undefined || $scope.contexto.fuente_url === undefined) {
-                mostrarMensaje($scope.mensaje, $scope.estiloAlert[1],
-                    '<b>Los campos de Nombre, Seccion y URL no pueden estar vacios.</b>');
-            } else {
-                $http.post(comun.urlBackend + "fuentes", $scope.contexto).success(function(respuesta) {
-                    if (respuesta.estado === "success") {
-                        setNuevo();
-                        mostrarMensaje($scope.mensaje, $scope.estiloAlert[4],
-                            '<b>La fuente se guardo correctamente. Con el id : <a href="#/fuentes/editar/' + respuesta.fuente.id + '"  title="ver fuente" >\n\
-                                                    ' + respuesta.fuente.id + '</a><b>\n\
-                                                    <br><br> Para introducir una nueva fuente llene los campos nuevamente, para volver presione en <b>"volver al inicio"</b>');
-
-                    } else {
-                        mostrarMensaje($scope.mensaje, $scope.estiloAlert[3],
-                            '<b>' + respuesta.mensaje + '<b> <a href="#/fuentes/editar/' + respuesta.fuente.id + '" class="badge bg-primary " title="ver fuente" >\n\
-                                                    <i class="fa fa-search"></i><span> ver fuente</span></a>\n\
-                                                    <br><br> Revise los campos del formulario, para volver presione en <b>"volver al inicio"</b>')
-                    }
-                });
-            }
-        };
-    }])
-
-    .controller('fuentesEditarCtrl', ['$scope', 'comun', '$routeParams', '$http', function($scope, comun, $routeParams, $http) {
-        $scope.modulo = 1;
-        comun.colocarSubtitulo("Fuentes de Noticias");
-        $scope.contexto = {};
-        $scope.mensaje = {
-            texto: '',
-            estilo: $scope.estiloAlert[4],
-            mostrar: false,
-        };
-
-        var id = $routeParams.id;
-
-        $http.get(comun.urlBackend + 'fuentes/' + id).success(function(res) {
-            $scope.contexto = res.fuente;
-            $scope.contexto.prioridad = $scope.contexto.prioridad.toString();
-        });
+        $scope.fn.cargarlista();
+        $scope.fn.cargarFuentesForm();
+        $("#fuente_form").validate(fn.validateRules());
+    })()
 
 
-
-        $scope.guardar = function() {
-            $scope.mensaje.mostrar = true;
-            if ($scope.contexto.fuente_nombre === '' || $scope.contexto.fuente_seccion === '' || $scope.contexto.fuente_url === '' ||
-                $scope.contexto.fuente_nombre === undefined || $scope.contexto.fuente_seccion === undefined || $scope.contexto.fuente_url === undefined) {
-                mostrarMensaje($scope.mensaje, $scope.estiloAlert[1],
-                    '<b>Los campos de Nombre, Seccion y URL no pueden estar vacios.</b>');
-            } else {
-                $http.post(comun.urlBackend + 'fuentes', $scope.contexto).success(function(res) {
-                    if (res.estado === 'success') {
-                        comun.irA('/');
-                    } else {
-                        mostrarMensaje($scope.mensaje, $scope.estiloAlert[3],
-                            '<b>' + res.mensaje + '<b> <a href="#/fuentes/editar/' + res.fuente.id + '" class="badge bg-primary " title="ver fuente" >\n\
-                        <i class="fa fa-search"></i><span> ver fuente</span></a>\n\
-                        <br><br> Revise los campos del formulario, para volver presione en <b>"volver al inicio"</b>')
-                    }
-                });
-            }
+}])
 
 
-
-
-
-        };
-    }])
-
-
-    .controller('configuracionCtrl', ['$scope', '$rootScope', 'comun', '$route', '$uibModal', '$http', function($scope, $rootScope, comun, $route, $uibModal, $http) {
+.controller('configuracionCtrl', ['$scope', '$rootScope', 'comun', '$route', '$uibModal', '$http', function($scope, $rootScope, comun, $route, $uibModal, $http) {
 
         $scope.modulo = 3;
         comun.colocarSubtitulo("Configuración");
@@ -191,15 +312,13 @@ app.controller('fuentesInicioCtrl', ['$scope', 'comun', '$http', function($scope
         }
     }])
 
-function sleep(sleepDuration) {
-    var now = new Date().getTime();
-    while (new Date().getTime() < now + sleepDuration) { /* do nothing */ }
-}
 
-function mostrarMensaje(mensaje, estilo, texto) {
-    angular.element("#div_mensaje").hide(500);
-    mensaje.texto = texto;
-    mensaje.estilo = estilo;
-    angular.element("#div_mensaje").show(500);
-}
+
+
+// function mostrarMensaje(mensaje, estilo, texto) {
+//     angular.element("#div_mensaje").hide(500);
+//     mensaje.texto = texto;
+//     mensaje.estilo = estilo;
+//     angular.element("#div_mensaje").show(500);
+// }
 

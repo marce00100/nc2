@@ -1,0 +1,357 @@
+<div id='wrapper_1123581321'>
+    <title>Catch</title>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../favicon.ico">        
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
+
+
+    <!-- <link rel="stylesheet" type="text/css" href="../bower_components/vendor-template-adm/assets/skin/default_skin/css/theme.css"> -->
+    <link rel="stylesheet" type="text/css" href="../bower_components/vendor-template-adm/assets/skin/default_skin/css/theme_x9.css">
+    <link rel="stylesheet" type="text/css" href="../bower_components/select2/dist/css/select2.min.css">
+
+<style media="screen">
+
+body {
+  margin: 0;
+}
+.over_x9{
+    border: 5px dotted #54FE00;
+/*    border-top:5px dotted #54FE00;
+    border-right:5px dotted #FF1122 ;
+    border-bottom:5px dotted yellow;
+    border-left:5px dotted #1122FF;*/
+}
+.bg_over_x9{
+    background-color: #ddeecc;
+}
+#divPanel_1123581321{
+    background-color: #111;
+    position: fixed;
+    top: 0;
+    left: 0;
+    opacity: 0.9;
+    z-index: 999999999;
+    width: 33%;
+}
+#divPanel_1123581321 input, #divPanel_1123581321 select{
+    color: #333;
+}
+#divPanel_1123581321 #datos_fuente_x9{
+    background-color: #151522;
+    opacity: 0.95;
+}
+
+
+#divPanel_1123581321:hover{
+    opacity: 1;
+}|
+
+
+</style>
+
+<div id="divPanel_1123581321" class=" _p5"  >
+    <div class="_row _pv15">
+        <!-- ------------------ boton LEFT ---------------------------------------------------------------- -->
+        <div  class="_col-xs-1" style="padding-top: 20px ">
+            <a id='moveL_x9' href="#" class="_fs15"><i class="_fa _fa-chevron-left"></i></a>
+        </div>
+        <!-- ------------------ Logo -------------------------------------------------------------------- -->
+        <div class='_col-xs-1 '>
+            <div class="_mv10 _fs15">
+                <span class="_fa-stack ">
+                    <i class="_fa _fa-bug _fa-rotate-90 _fa-stack-1x _text-white"></i>
+                    <i class="_glyphicons _glyphicons-riflescope _fa-stack-2x _text-danger _dark"></i>
+                </span>
+                <span style="color: red"></span> 
+            </div>
+        </div>
+        <!-- ------------------ Principal ----------------------------------------------------------------- -->
+        <div class="_col-xs-9"> 
+            <span style="color: #333">
+                <select id="fuentes_m_x9"    style="width:100%; height: 25px">            
+                </select>
+            </span>
+            <!-- botones ------------------ -->
+            <div class="_row _mt5 _ph10">
+                <span id="op_fuente_x9" class="_pull-left _mh5" style="cursor: pointer;" title="Datos de la fuente"><i class="_fa _fa-align-left _text-info-lighter
+                    "></i></span>
+                <div class="_pull-right">
+                    <span id="op_load_x9" class="_mh5" style="cursor: pointer;" title="Recargar" ><i class="_fa _fa-refresh _text-info-lighter "></i></span>
+                    <span id="op_clean_x9" class="_mh5" style="cursor: pointer;" title="limpiar"><i class="_fa _fa-diamond _text-info-lighter "></i></span>
+                    <span id="op_help_x9" class="_mh5" style="cursor: pointer;"  ><i class="_fa _fa-question _text-info-darker "></i></span>
+                    <span id="op_link_x9" class="_mh5" style="cursor: pointer;" hidden="" ><i class="_fa _fa-link _text-alert "></i></span>
+                    <span id="op_text_x9" class="_mh5" style="cursor: pointer;" hidden=""><i class="_fa _fa-square-o _text-warning"></i></span>
+                </div>
+            </div>
+            <!-- campos fuente -------------- -->
+            <div id="datos_fuente_x9" hidden="" class="_fs10" >
+                <div class=" _text-white" >Datos fuente</div>
+                <div class=""><input type="text" id="nombre_fuente_x9" name="" placeholder="nombre fuente" style="width: 100%"></div>
+                <div class=""><input type="text" id="nombre_seccion_x9" name="" placeholder="seccion fuente" style="width: 100%"></div>
+            </div>
+            <div id="help_x9" class="_text-info-dark" hidden="" style="background-color: #122">
+                <div class="_br-t _br-b _p10 ">
+                    <h4>News Hunter v1.0</h4>
+                    <p>Capturador de contenidos</p>
+                </div>
+                <div class="_p15 _fs10">
+                    <li>CLICK en link : ir al link</li>
+                    <li>CTRL + CLICK: Guardar Contenido encuadrado</li>
+                    <li>ALT + CLICK: Guardar destino de link</li>
+                    <li>CTRL + ALT + CLICK: Guardar todos los destinos de link encuadrados</li>
+                    <li>Botones de flecha: Para mover el control </li>
+                    <li class="_fs11">Para desactivar el capturador ir a la extension en la esquina superior derecha y desactivar desde el menu</li>
+                </div>
+            </div>
+        </div>
+        <!-- ------------------ boton RIGHT --------------------------------------------------------------- -->
+        <div  class="_col-xs-1" style="padding-top: 20px ">
+            <a id='moveR_x9' href="#" class="_fs15"><i class="_fa _fa-chevron-right"></i></a>
+        </div>
+    </div>
+   
+</div>
+
+<div id="divUrl_1123581321" class="_m20">
+    Contenido de Prueba
+    <div>
+        div1 dentro
+        <div>
+            div2 <input type="" name="">
+            <div>
+                div3  --------------------<input type="" name="">
+                <button>x</button>
+                <a
+            </div>
+            <div>
+                div3  Contenido para probar <input type="" name="">
+                <button>y</button>
+            </div>
+            <div>
+                div3 Contenido de pruaba <input type="" name="">
+                <button></button>
+            </div>
+            <input type="" name="">
+            <button>z</button>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- <iframe id="ifra" src="http://www.paginasiete.bo/rss/feed.html?r=150" width="100%" height="500px"></iframe> -->
+<!-- <iframe id="ifra" src="http://localhost:8000" seamless="" width="100%" height="500px"></iframe> -->
+
+
+<!-- <iframe id="ifra" srcdoc='
+    <div class="_fs10 _text-white" >Datos fuente</div>
+                <div class="_fs10"><input type="text" id="txt1" name="" placeholder="nombre fuente" style="width: 100%"></div>
+                <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+                <script>
+                    $(function(){
+                        $("#txt1").val("hoy si")
+                })
+
+                 </script>    ' 
+                    width="100%" height="500px" ></iframe> -->
+
+
+
+
+
+
+
+<!-- ------------------------------ scripts ------------------------------------------------------------------------>
+<script src="../bower_components/jquery/dist/jquery.min.js" type="text/javascript"></script>
+<script src="../bower_components/select2/dist/js/select2.min.js"></script>
+<script type="text/javascript">
+$(function(){
+    var ctx = {
+        urlApi : '/www/nc20/public/',
+        color: 'red',
+        panel: $("#divPanel_1123581321"),
+        selFuentes: $("#fuentes_m_x9"),
+        contenedor : $("#divUrl_1123581321"),
+        objSel: '',
+        cargaFuentes: function(fonts){
+            for(i = 0; i < fonts.length; i++){
+                op = fonts[i];
+                html = `<option value="${op.fuente_url}">${op.fuente_nombre} ${op.fuente_seccion} ` + '(' + (op.ultima_pasada  || '') + ')</option> ';
+                ctx.selFuentes.append(html);                    
+            }
+            ctx.selFuentes.select2({
+                placeholder: 'Seleccione ...',
+                dropdownParent: $('#divPanel_1123581321'),
+                cache: false,
+                tags: true,
+                language: "es",                    
+            });
+        },
+        cargaPage: function(url){
+            ctx.contenedor.html('');
+
+            if(url.substr(0,1).toLowerCase() == '/')
+            {
+                url_ =  ctx.selFuentes.val() + url ;
+                console.log('1 ' + url_)
+            }
+            else if(url.substr(0,4).toLowerCase() == '/htt'  || url.substr(0,3).toLowerCase() == 'htt'  || url.substr(0,4).toLowerCase() == '/www'||  url.substr(0,3).toLowerCase() == 'www' || url.substr(0,5).toLowerCase() == 'file:' )
+            {
+                url_ = url;
+                console.log('2 ' + url_)
+            }            
+            else
+            {
+                url_ = ctx.selFuentes.val() + '/' + url;
+                console.log(' 3 ' + url_)
+            }
+            $.post(ctx.urlApi + "catch/showpage", {url:url_, base_fuente: ctx.selFuentes.val()}, function(r){
+                ctx.contenedor.html(r.data);
+            })
+        },
+        limpiar: function(){
+            ctx.contenedor.html('');
+            $('head').html('');
+            $('body>*').each(function(elem){
+                if ($(this).attr('id') != 'wrapper_1123581321') 
+                    $(this).remove();
+            });
+        },
+        moverpanel: function(obj){
+            var _left = obj.attr('id') == 'moveL_x9' ? '0':'69%'
+            ctx.panel.animate({ left: _left}, 1000);
+        }
+    }
+
+    $.get('/www/nc20/public/' + 'fuentes/rastrear/M', function(res){
+        ctx.cargaFuentes(res.data);
+    })
+
+    $("#op_fuente_x9").click(function(){
+        $("#datos_fuente_x9").toggle(300);
+    })
+
+    $("#op_load_x9").click(function(){
+        var url = ctx.selFuentes.val();
+        ctx.cargaPage(url);
+    })
+
+    $("#op_help_x9").click(function(){
+        $("#help_x9").toggle(300);
+    })
+
+    $("#op_clean_x9").click(function(){
+        ctx.limpiar();
+        $("#datos_fuente_x9").hide(300);
+        $("#help_x9").hide(300);
+    }) 
+
+    $("#moveR_x9, #moveL_x9").click(function(){
+        ctx.moverpanel($(this));
+    })       
+
+    /* Mouse over --------------------------------------------------------------*/
+    ctx.contenedor.on("mouseover", "*", function(ev) {
+        ctx.objSel = $(ev.target);
+        ctx.objSel.addClass("over_x9 ");
+        return false;
+    });
+
+    ctx.contenedor.on("mouseout", "*", function(ev) {
+      $(ev.target).removeClass("over_x9 ");
+      return false;
+    });
+    
+    /* funcion ctrl alt CLICK -------------------------------------------------*/
+    ctx.contenedor.on("click", "*", function(ev) {
+        /* Si solo se presiona click */
+        if($(this).attr('href') && !ev.altKey && !ev.ctrlKey){
+            var url = $(this).attr('href');
+            ctx.cargaPage(url);
+        } 
+        if(ev.ctrlKey && !ev.altKey){
+            console.log('CTRL pressed ' + $(this).html());
+        }
+        if(ev.altKey && !ev.ctrlKey){            
+            console.log('ALT pressed ' + $(this).attr('href'));
+        }
+        if(ev.altKey && ev.ctrlKey){
+            console.log('ALT-CTRL pressed ' + $(this).html());
+        }
+
+        return false;
+    });
+
+    ctx.selFuentes.change(function(){
+        var url = ctx.selFuentes.val();
+        ctx.cargaPage(url);
+    })
+
+
+
+
+
+
+
+    ///////////////////////    //////////////////////
+    ///////////////////////  Procedimientos de IFRAME  ////////////////////////
+
+
+
+//     document.querySelectorAll("div, a").addEventListener("mouseover", mouseOver);
+// document.querySelectorAll("div, a").addEventListener("mouseout", mouseOut);
+
+// function mouseOver() {
+//     document.getElementById("demo").style.color = "red";
+// }
+
+// function mouseOut() {
+//     document.getElementById("demo").style.color = "black";
+// }
+
+
+
+
+
+    // $("#op_link_x9").click(function(){
+
+    //     // $('#ifra').contents().find('body').prepend('<h1>ESOOOOOOOOOOOOOOOOOOOOOOOOOO!!!!!</h1>');
+
+    //     var $iframe = $('#ifra');
+    //     $iframe.ready(function() {
+    //         var divin = $iframe.contents().find("div");
+    //         console.log(divin)
+    //         for(i=0;i<divin.length;i++)
+    //             divin[i].style.backgroundColor = "red";
+    //     });
+
+
+    //     // var pruebaiframe = $("#ifra").attr('{srcdoc:"holllllkkl"}');
+    //     // script = '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"><\/script>';
+        
+    //     // script = `var x = document.querySelectorAll('div, a')
+    //     //             for(i=0; i<x.length; i++)
+    //     //             {
+    //     //                 x[i].style.backgroundColor = "red";
+    //     //             }`;
+    //     // $('#ifra').contents().find('body').append($('<script>').html(script))
+
+    //     // console.log($("#ifra").contents())
+    // })
+
+    
+    
+
+
+})    
+
+
+
+
+
+
+
+</script>
+
+</div>
+
